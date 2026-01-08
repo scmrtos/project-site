@@ -3,7 +3,7 @@
 
 **scmRTOS** is capable to run on tiny uCs with as small amount of RAM as 512 bytes. The RTOS is written on C++ and supports [various platforms](platforms.md). Seen next sections and [online documentation](doc.md) for more details.
 
-Source code can be cloned or dowloaded from [github.com](https://github.com/scmrtos/scmrtos). There are a [number of sample projects](https://github.com/scmrtos/scmrtos-sample-projects) that demonstrates RTOS usage.
+Source code can be cloned or downloaded from [github.com](https://github.com/scmrtos/scmrtos). There are a [number of sample projects](https://github.com/scmrtos/scmrtos-sample-projects) that demonstrates RTOS usage.
 
 Full distribution including RTOS sources, sample projects, documentation[^1], etc available on [releases page](https://github.com/scmrtos/scmrtos/releases/).
 
