@@ -1,7 +1,7 @@
 
 #### Documentation
 
-There are comprehensive guides:
+There are comprehensive online guides:
 
 [English](https://scmrtos.github.io/doc-en/)
 

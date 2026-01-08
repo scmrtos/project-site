@@ -17,7 +17,7 @@ extra_css:
 
 
 nav:
-    - Breif Description   : index.md 
+    - Synopsys            : index.md 
     - Features            : features.md
     - Supported Platforms : platforms.md
     - Documentation       : doc.md
