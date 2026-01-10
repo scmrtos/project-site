@@ -4,6 +4,7 @@ site_name: scmRTOS
 
 theme:
     name: readthedocs
+    custom_dir: overrides
     max_width: 2000
     navigation_depth: 5
     font: false
@@ -12,23 +13,39 @@ theme:
         - content.code.annotate
     #name: windmill
 
+
 extra_css: 
     - extra.css
 
 
 nav:
-    - Synopsys            : index.md 
-    - Features            : features.md
-    - Supported Platforms : platforms.md
-    - Documentation       : doc.md
+    - Synopsys                           : index.md 
+    - Features                           : features.md
+    - Supported Platforms                : platforms.md
+
+    - Intro:
+        - Not a Preface                  : src/intro.md 
+        - Overview                       : src/overview.md
+    
+    - RTOS Components:
+        - Kernel                         : src/kernel.md
+        - Processes                      : src/processes.md
+        - Interprocess Communications    : src/ipcs.md
+        - Ports                          : src/ports.md
+
+    - Appendix:
+        - Debug                          : src/debug.md
+        - Process Profiling              : src/profiler.md
+        - 'Example: Job Queue'           : src/example-job-queue.md
+        - Glossary                       : src/glossary.md
 
 extra_javascript:
     - js/mathjax.js
     - js/mathjax/tex-mml-chtml.js
-    - js/wavedrom.min.js
-    - js/wavedrom_loader.js
-    - js/wavedrom.unpkg.js
-    - js/wavedrom_skin_default.js
+    #- js/wavedrom.min.js
+    #- js/wavedrom_loader.js
+    #- js/wavedrom.unpkg.js
+    #- js/wavedrom_skin_default.js
 
 
 markdown_extensions:
@@ -63,6 +80,43 @@ markdown_extensions:
 plugins:
     - search:
         lang: en
+
+    - i18n:
+          docs_structure: folder
+          languages:
+            - locale: en
+              name: English
+              build: true
+              default: true
+            - locale: ru
+              name: Русский
+              build: true
+              nav:
+                - Общие сведения                     : index.md 
+                - Характеристики                     : features.md
+                - Поддерживаемые платформы           : platforms.md
+
+                - Введение:
+                    - Вместо предисловия             : src/intro.md 
+                    - Обзор операционной системы     : src/overview.md
+                
+                - Компоненты:
+                    - Ядро                           : src/kernel.md
+                    - Процессы                       : src/processes.md
+                    - Межпроцессное взаимодействие   : src/ipcs.md
+                    - Порты                          : src/ports.md
+
+                - Приложения:
+                    - Отладка                        : src/debug.md
+                    - Профилировка процессов         : src/profiler.md
+                    - 'Пример: очередь заданий'      : src/example-job-queue.md
+                    - Термины и сокращения           : src/glossary.md
+
+
+          #default_language: en
+          #languages:
+          #  en: English
+          # ru: Русский
 
     - glightbox
     #- markdownwavedrom
