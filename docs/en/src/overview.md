@@ -121,7 +121,7 @@ The project-dependent part consists of three header files:
 
 ### Internal Structure
 
-Everything related to **scmRTOS**, except a few assembly-implemented functions with `extern "C"` linkage, is placed inside the `OS` namespace—providing a dedicated namespace for OS components.
+Everything related to **scmRTOS**, except a few assembly-implemented functions with `extern "C"` linkage, is placed inside the `OS` namespace that provides a dedicated namespace for OS components.
 
 Within this namespace, the following classes are declared[^5]:
 
