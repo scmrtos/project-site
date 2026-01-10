@@ -92,14 +92,14 @@ Recommended file placement: common part in a separate `core` directory, platform
 
 The common part source code is in eight files:
 
-* `scmRTOS.h` – main header file, including the entire system header hierarchy.
-* `os_kernel.h` – primary kernel type declarations and definitions.
-* `os_kernel.cpp` – kernel object declarations and function definitions.
-* `scmRTOS_defs.h` – auxiliary declarations and macros.
-* `os_services.h` – service type and template definitions.
-* `os_services.cpp` – service function definitions.
-* `usrlib.h` – support library type and template definitions.
-* `usrlib.cpp` – support library function definitions.
+* **scmRTOS.h**. Main header file, including the entire system header hierarchy.
+* **os_kernel.h**. Primary kernel type declarations and definitions.
+* **os_kernel.cpp**. Kernel object declarations and function definitions.
+* **scmRTOS_defs.h**. Auxiliary declarations and macros.
+* **os_services.h**. Service type and template definitions.
+* **os_services.cpp**. Service function definitions.
+* **usrlib.h**. Support library type and template definitions.
+* **usrlib.cpp**. Support library function definitions.
 
 As evident from the list, **scmRTOS** includes a small support library containing code used by OS components[^3]. Since this library is not essentially part of the OS, it will not be discussed further here.
 
@@ -107,17 +107,17 @@ As evident from the list, **scmRTOS** includes a small support library containin
 
 The platform-dependent part source code is in three files:
 
-* `os_target.h` – platform-dependent declarations and macros.
-* `os_target_asm.ext`[^4] – low-level code for context switching and OS startup functions.
-* `os_target.cpp` – process stack frame initialization function definition, system timer interrupt handler, and the idle process root function.
+* **os_target.h**. Platform-dependent declarations and macros.
+* **os_target_asm.ext**[^4]. Low-level code for context switching and OS startup functions.
+* **os_target.cpp**. Process stack frame initialization function definition, system timer interrupt handler, and the idle process root function.
 
 [^4]: Assembly file extension for the target processor.
 
 The project-dependent part consists of three header files:
 
-* `scmRTOS_config.h` – configuration macros and type aliases, particularly for timeout object bit widths.
-* `scmRTOS_target_cfg.h` – code for tailoring OS mechanisms to the project; e.g., specifying the interrupt vector for the system timer handler, system timer control macros, context switch interrupt activation function definition, etc.
-* `scmRTOS_extensions.h` – extension inclusion control. See [TKernelAgent and Extensions](kernel.md#kernel-agent) for details.
+* **scmRTOS_config.h**. Configuration macros and type aliases, particularly for timeout object bit widths.
+* **scmRTOS_target_cfg.h**. Code for tailoring OS mechanisms to the project; e.g., specifying the interrupt vector for the system timer handler, system timer control macros, context switch interrupt activation function definition, etc.
+* **scmRTOS_extensions.h**. Extension inclusion control. See [TKernelAgent and Extensions](kernel.md#kernel-agent) for details.
 
 ### Internal Structure
 
