@@ -24,7 +24,7 @@ nav:
     - Supported Platforms                : platforms.md
 
     - Intro:
-        - Not a Preface                  : src/intro.md 
+        - Preface                        : src/preface.md 
         - Overview                       : src/overview.md
     
     - RTOS Components:
@@ -97,7 +97,7 @@ plugins:
                 - Поддерживаемые платформы           : platforms.md
 
                 - Введение:
-                    - Вместо предисловия             : src/intro.md 
+                    - Предисловие                    : src/preface.md 
                     - Обзор операционной системы     : src/overview.md
                 
                 - Компоненты:
