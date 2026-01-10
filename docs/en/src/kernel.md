@@ -12,7 +12,7 @@ The OS kernel performs:
 * System time support (system timer).
 * Extension support.
 
-The core of the system is the `TKernel` class, which includes all the necessary functions and data. For obvious reasons, there is only one instance of this class. Almost its entire implementation is private, and to allow access from certain OS parts that require kernel resources, the C++ "friend" mechanism is used — functions and classes granted such access are declared with the `friend` keyword.
+The core of the system is the `TKernel` class, which includes all the necessary functions and data. For obvious reasons, there is only one instance of this class. Almost its entire implementation is private, and to allow access from certain OS parts that require kernel resources, the C++ "friend" mechanism is used&nbsp;– functions and classes granted such access are declared with the `friend` keyword.
 
 It should be noted that in this context, the kernel refers not only to the `TKernel` object but also to the extension mechanism implemented as the `TKernelAgent` class. This class was specifically introduced to provide a base for building extensions. Looking ahead, all interprocess communication services in **scmRTOS** are implemented as such extensions. The `TKernelAgent` class is declared as a "friend" of `TKernel` and contains the minimal necessary set of protected functions to grant descendants access to kernel resources. Extensions are built by inheriting from `TKernelAgent`. For more details, see [TKernelAgent and Extensions](kernel.md#kernel-agent).
 
@@ -24,18 +24,18 @@ It should be noted that in this context, the kernel refers not only to the `TKer
 
 The `TKernel` class contains the following data members[^1]:
 
-* `CurProcPriority` — variable holding the priority number of the current active process. Used for quick access to the current process resources and for manipulating process status (both relative to the kernel and to interprocess communication services)[^2];
-* `ReadyProcessMap` — map of processes ready for execution. Contains tags of ready processes: each bit corresponds to a specific process, with logical 1 indicating the process is ready[^3], and logical 0 indicating it is not;
-* `ProcessTable` — array of pointers to processes registered in the system;
-* `ISR_NestCount` — interrupt nesting counter variable. Incremented on each interrupt entry and decremented on each exit;
-* `SysTickCount` — system timer tick (overflow) counter variable. Present only if this feature is enabled (via the corresponding macro in the configuration file);
-* `SchedProcPriority`* — variable for storing the priority value of the process scheduled to receive control.
+  * `CurProcPriority`&nbsp;– variable holding the priority number of the current active process. Used for quick access to the current process resources and for manipulating process status (both relative to the kernel and to interprocess communication services)[^2];
+  * `ReadyProcessMap`&nbsp;– map of processes ready for execution. Contains tags of ready processes: each bit corresponds to a specific process, with logical 1 indicating the process is ready[^3], and logical 0 indicating it is not;
+  * `ProcessTable`&nbsp;– array of pointers to processes registered in the system;
+  * `ISR_NestCount`&nbsp;– interrupt nesting counter variable. Incremented on each interrupt entry and decremented on each exit;
+  * `SysTickCount`&nbsp;– system timer tick (overflow) counter variable. Present only if this feature is enabled (via the corresponding macro in the configuration file);
+  * `SchedProcPriority`\*&nbsp;– variable for storing the priority value of the process scheduled to receive control.
 
 [^1]: Objects marked with ‘\*’ are present only in the variant using software interrupt-based control transfer.
 
 [^2]: Ideologically, using a pointer to the process might seem more correct for these purposes, but analysis showed no performance gain, and the pointer size is typically larger than an integer variable for storing priority.
 
-[^3]: The process may be active (executing) or inactive (waiting for control) — the latter occurs when there is another ready process with higher priority.
+[^3]: The process may be active (executing) or inactive (waiting for control)&nbsp;– the latter occurs when there is another ready process with higher priority.
 
 ### Process Organization
 
@@ -68,7 +68,7 @@ Listing 2. OS Startup Function
 
 As seen, the actions are extremely simple: the stack pointer of the highest-priority process is retrieved from the process table (line 3), and the system is started (line 4) by calling the low-level `os_start()` function, passing it the retrieved stack pointer of the highest-priority process.
 
-From this moment, the OS begins operating in normal mode — control is transferred between processes according to their priorities, events, and the user program.
+From this moment, the OS begins operating in normal mode: control is transferred between processes according to their priorities, events, and the user program.
 
 ### Control Transfer
 
@@ -77,7 +77,7 @@ Control transfer can occur in two ways:
 * The process voluntarily yields control when it has nothing more to do (for now), or as a result of its work, it needs to engage in interprocess communication with other processes (acquire a mutual exclusion semaphore (`OS::TMutex`), or, after signaling an event flag (`OS::TEventFlag`), notify the kernel, which must then perform (if necessary) process rescheduling.
 * Control is taken from the process by the kernel due to an interrupt triggered by some event; if a higher-priority process was waiting for that event, control is given to it, and the interrupted process waits until the higher-priority one completes its task and yields control[^4].
 
-[^4]: This higher-priority process may in turn be interrupted by an even higher-priority one, and so on, until the highest-priority process is reached — it can only be (temporarily) interrupted by an interrupt handler, but upon return, control always goes back to it. Thus, the highest-priority process cannot be preempted by any other process. Upon exiting an interrupt handler, control always passes to the highest-priority ready-to-run process.
+[^4]: This higher-priority process may in turn be interrupted by an even higher-priority one, and so on, until the highest-priority process is reached&nbsp;– it can only be (temporarily) interrupted by an interrupt handler, but upon return, control always goes back to it. Thus, the highest-priority process cannot be preempted by any other process. Upon exiting an interrupt handler, control always passes to the highest-priority ready-to-run process.
 
 In the first case, rescheduling is synchronous relative to program execution flow&nbsp;– performed in the scheduler code. In the second case, it is asynchronous upon event occurrence.
 
@@ -85,7 +85,7 @@ Control transfer itself can be organized in several ways. One is direct transfer
 
 [^5]: Usually implemented in assembly.
 
-[^6]: Or upon interrupt handler exit — depending on whether the transfer is synchronous or asynchronous.
+[^6]: Or upon interrupt handler exit&nbsp;– depending on whether the transfer is synchronous or asynchronous.
 
 ### Scheduler
 
@@ -103,7 +103,7 @@ With proper use of OS services, this situation should not occur, as scheduling f
 
 For example, to signal an event flag from an interrupt, the user should use `signal_isr()`[^7] instead. However, using the non-\_isr version won't cause a fatal error&nbsp;– the scheduler simply won't be called, and despite the event arriving in the interrupt, no control transfer occurs, even if it was due.
 
-Control transfer happens only at the next rescheduling call, which occurs when the destructor of a `TISRW/TISRW_SS` object executes. Thus, `scheduler()` provides protection against program crashes from careless service use or services lacking `_isr` versions — e.g., `channel::push()`.
+Control transfer happens only at the next rescheduling call, which occurs when the destructor of a `TISRW/TISRW_SS` object executes. Thus, `scheduler()` provides protection against program crashes from careless service use or services lacking `_isr` versions&nbsp;– e.g., `channel::push()`.
 
 [^7]: All interrupt handlers using interprocess communication services must declare a `TISRW` object before any interprocess communication service function call (i.e., where scheduling may occur). This object must be declared before the first OS service use.
 
