@@ -186,7 +186,7 @@ This hides a rather subtle point. Why not, for example, simply implement the int
 
 If, at the moment interrupts are enabled—which in this OS version is implemented by globally enabling interrupts (line 37)—one or more other interrupts are pending in addition to the software interrupt, and some of them have higher priority than the software context switch interrupt, control will naturally transfer to the handler of the corresponding interrupt. Upon completion, execution returns to the interrupted program. At this point, in the main program (i.e., inside the scheduler function), the processor may execute one or more instructions[^8] before the next interrupt can be serviced.
 
-[^8]: This is a common property of many processors—after returning from an interrupt, transitioning to the next interrupt handler is not possible immediately in the same machine cycle but only after one or more cycles.
+[^8]: This is a common property of many processors: after returning from an interrupt, transitioning to the next interrupt handler is not possible immediately in the same machine cycle but only after one or more cycles.
 
 The program could then reach the code that disables context switching, resulting in interrupts being globally disabled and preventing the software interrupt (where the context switch occurs) from executing. This means control would remain in the current process, even though it should have been transferred to the system (and other processes) until the event awaited by the current process occurs. This is nothing less than a violation of system integrity and can lead to a wide variety of unpredictable negative consequences.
 
@@ -196,7 +196,7 @@ To make this mechanism work, a criterion is needed to confirm that rescheduling 
 
 As can be seen, no updates are made here to variables holding stack pointers or the current priority value. All such actions are performed later during the actual context switch by calling the special kernel function `os_context_switch_hook()`.
 
-One might ask: why all this complexity? To answer, consider a scenario where, in the software interrupt case, the scheduler implementation remained the same as in the direct context switcher call—only instead of:
+One might ask: why all this complexity? To answer, consider a scenario where, in the software interrupt case, the scheduler implementation remained the same as in the direct context switcher call, but instead of:
 
 ```cpp
 os_context_switcher(Curr_SP_addr, Next_SP);
@@ -217,7 +217,7 @@ The scheduler would be invoked again, triggering another process rescheduling. H
 
 Moreover, when determining the need for rescheduling, the value of `CurProcPriority` would be used, which is effectively incorrect because it holds the priority of the process scheduled from the previous scheduler invocation. In short, rescheduling operations would overlap, violating system integrity.
 
-Therefore, it is critical that the actual update of `CurProcPriority` and the process context switch be "atomic"—inseparable and not interrupted by other code related to process scheduling. In the direct context switcher call variant, this rule is inherently satisfied: the entire scheduler operates in a critical section, and the context switcher is called directly from there.
+Therefore, it is critical that the actual update of `CurProcPriority` and the process context switch be "atomic"&nbsp;– inseparable and not interrupted by other code related to process scheduling. In the direct context switcher call variant, this rule is inherently satisfied: the entire scheduler operates in a critical section, and the context switcher is called directly from there.
 
 In the variant with software interrupt, context scheduling and switching can be "separated" in time. Therefore, the actual switching and updating of the current priority occur directly during the execution of the software interrupt handler[^10]. In it, immediately after saving the context of the current process, the function `os_context_switch_hook()` is called (where the value of `CurProcPriority` is actually updated), and the stack pointer of the current process is passed to `os_context_switch_hook()`, where it is saved in the current process object. The stack pointer of the next process is then retrieved and returned from the function, which is necessary for restoring the context of that process and subsequently transferring control to it.
 
@@ -247,7 +247,7 @@ Both methods have their advantages and disadvantages. The strengths of one contr
 #### Direct Control Transfer  
 The main advantage of direct control transfer is that it does not require a special software interrupt in the target MCU&nbsp;– not all MCUs have this hardware capability. A secondary minor benefit is slightly higher performance compared to the software interrupt variant, as the latter incurs additional overhead for activating the context switch interrupt handler, the wait cycle for context switching, and the call to `os_context_switch_hook()`.
 
-However, the direct control transfer variant has a significant drawback: when the scheduler is called from an interrupt handler, the compiler is forced to save the "local context" (scratch registers of the processor) due to the call to a non-inlined context switch function, which introduces overhead that can be substantial compared to the rest of the ISR code. The negative aspect here is that saving these registers may be entirely unnecessary—after all, in that function[^11], which causes them to be saved, these registers are not used. Therefore, if there are no further calls to non-inlined functions, the code for saving and restoring this group of registers turns out to be redundant.
+However, the direct control transfer variant has a significant drawback: when the scheduler is called from an interrupt handler, the compiler is forced to save the "local context" (scratch registers of the processor) due to the call to a non-inlined context switch function, which introduces overhead that can be substantial compared to the rest of the ISR code. The negative aspect here is that saving these registers may be entirely unnecessary: after all, in that function[^11], which causes them to be saved, these registers are not used. Therefore, if there are no further calls to non-inlined functions, the code for saving and restoring this group of registers turns out to be redundant.
 
 [^11]:  
 ```cpp
@@ -255,7 +255,7 @@ os_context_switcher(stack_item_t **Curr_SP, stack_item_t *Next_SP)
 ```
 
 #### Software Interrupt-Based Control Transfer  
-This variant avoids the aforementioned drawback. Since the ISR itself executes normally without rescheduling from within it, saving the "local context" is also not performed, significantly reducing overhead and improving system performance. To avoid spoiling the picture by calling a non-inlined member function of an interprocess communication service object, it is recommended to use special lightweight, inlinable versions of such functions—for more details, see [the Interprocess Communication section](ipcs.md).
+This variant avoids the aforementioned drawback. Since the ISR itself executes normally without rescheduling from within it, saving the "local context" is also not performed, significantly reducing overhead and improving system performance. To avoid spoiling the picture by calling a non-inlined member function of an interprocess communication service object, it is recommended to use special lightweight, inline versions of such functions&nbsp;– for more details, see [the Interprocess Communication section](ipcs.md).
 
 The main disadvantage of software interrupt-based control transfer is that not all hardware platforms support software interrupts. In such cases, one of the unused hardware interrupts can be used as a software interrupt. Unfortunately, this introduces some lack of universality&nbsp;– it is not known in advance whether a particular hardware interrupt will be needed in a given project. Therefore, if the processor does not specifically provide a suitable interrupt, the choice of context switch interrupt is delegated (from the port level) to the project level, and the user must write the corresponding code[^12] themselves.
 
@@ -266,7 +266,7 @@ When using software interrupt-based control transfer, the expression "The kernel
 #### Conclusions  
 Given the above analysis of the advantages and disadvantages of both control transfer methods, the general recommendation is as follows: if the target platform provides a suitable interrupt for implementing context switching, it makes sense to use this variant, especially if the size of the "local context" is sufficiently large.
 
-Using direct control transfer is justified when it is truly impossible to use a software interrupt—for example, when the target platform does not support such an interrupt, and using a hardware interrupt as a software one is impossible for one reason or another, or if the performance characteristics with this control transfer variant prove better due to lower overhead in organizing context switches, while saving/restoring the "local context" does not introduce noticeable overhead due to its small size[^13].
+Using direct control transfer is justified when it is truly impossible to use a software interrupt&nbsp;– for example, when the target platform does not support such an interrupt, and using a hardware interrupt as a software one is impossible for one reason or another, or if the performance characteristics with this control transfer variant prove better due to lower overhead in organizing context switches, while saving/restoring the "local context" does not introduce noticeable overhead due to its small size[^13].
 
 [^13]: For example, on **MSP430**/IAR, the "local context" consists of just 4 registers.
 
@@ -285,7 +285,7 @@ To simplify usage and improve portability, the code executed at the entry and ex
 
 [^14]: The aforementioned functions `isr_enter()` and `isr_exit()` are member functions of this wrapper class.
 
-It should be noted that if a non-inlinable function is called within an interrupt handler, the compiler will save the "local context"—the scratch[^15] registers[^16]. Therefore, it is advisable to avoid calls to non-inlinable functions from interrupt handlers, as even partial context saving degrades both execution speed and code size[^17]. For this reason, in the current version of **scmRTOS**, some interprocess communication objects have been augmented with special lightweight functions designed for use in interrupt handlers. These functions are inlinable and employ a lightweight version of the scheduler, which is also inlinable. For more details, see [the Interprocess Communication Services section](ipcs.md).
+It should be noted that if a non-inlinable function is called within an interrupt handler, the compiler will save the "local context"&nbsp;– the scratch[^15] registers[^16]. Therefore, it is advisable to avoid calls to non-inlinable functions from interrupt handlers, as even partial context saving degrades both execution speed and code size[^17]. For this reason, in the current version of **scmRTOS**, some interprocess communication objects have been augmented with special lightweight functions designed for use in interrupt handlers. These functions are inlinable and employ a lightweight version of the scheduler, which is also inlinable. For more details, see [the Interprocess Communication Services section](ipcs.md).
 
 [^15]: Typically, the compiler divides processor registers into two groups: scratch and preserved. Scratch registers are those that any function may use without prior saving. Preserved registers are those whose values must be saved if the function needs to use them (the function must save the value before use and restore it afterward). In some cases, preserved registers are referred to as local; in the context discussed here, these terms are synonymous.
 
@@ -295,7 +295,7 @@ It should be noted that if a non-inlinable function is called within an interrup
 
 #### Separate Interrupt Stack and Nested Interrupts
 
-Another aspect related to interrupts in a preemptive RTOS is the use of a separate stack for interrupt handlers. As is well known, when an interrupt occurs and control is transferred to its handler, the program uses the stack of the interrupted process. This stack must be large enough to satisfy the needs of both the process itself and any interrupt handler. Moreover, it must accommodate the combined worst-case requirements—for example, when the process code has reached its peak stack usage and an interrupt occurs at that moment, with its handler also consuming additional stack space. The stack size must be sufficient to prevent overflow even in this scenario.
+Another aspect related to interrupts in a preemptive RTOS is the use of a separate stack for interrupt handlers. As is well known, when an interrupt occurs and control is transferred to its handler, the program uses the stack of the interrupted process. This stack must be large enough to satisfy the needs of both the process itself and any interrupt handler. Moreover, it must accommodate the combined worst-case requirements&nbsp;– for example, when the process code has reached its peak stack usage and an interrupt occurs at that moment, with its handler also consuming additional stack space. The stack size must be sufficient to prevent overflow even in this scenario.
 
 Clearly, the above considerations apply to all processes in the system. If interrupt handlers consume a significant amount of stack space, the stack sizes of all processes must be increased by a corresponding amount. This leads to higher memory overhead. In the case of nested interrupts, the situation becomes dramatically worse.
 
@@ -319,13 +319,14 @@ Based on the above, the following recommendation can be made.
 
 !!! error "**WARNING**"
     Despite the apparent advantages of a separate interrupt stack, it is not recommended on processors lacking hardware support for switching the stack pointer to the interrupt stack.
-    This is due to additional overhead from manual stack switching, poor portability—any non-standard extensions are a source of problems—and the fact that direct manipulation of the stack pointer can cause collisions with local object addressing. For example, the compiler, seeing the body of the interrupt handler, allocates[^21] memory for local objects on the stack—and does so before calling[^22] the wrapper constructor. As a result, after switching the stack pointer to the interrupt stack, the previously allocated memory will physically reside elsewhere, causing the program to malfunction, while the compiler cannot detect this issue.
-    Similarly, nested interrupts are not recommended on processors without hardware support for them. Such interrupts require careful handling and usually additional maintenance—for example, blocking the interrupt source to prevent re-invocation of the same handler when interrupts are enabled.
+    This is due to additional overhead from manual stack switching, poor portability—any non-standard extensions are a source of problems—and the fact that direct manipulation of the stack pointer can cause collisions with local object addressing. For example, the compiler, seeing the body of the interrupt handler and allocates[^21] memory for local objects on the stack before calling[^22] the wrapper constructor. As a result, after switching the stack pointer to the interrupt stack, the previously allocated memory will physically reside elsewhere, causing the program to malfunction, while the compiler cannot detect this issue.
+    
+    Similarly, nested interrupts are not recommended on processors without hardware support for them. Such interrupts require careful handling and usually additional maintenance&nbsp;– for example, blocking the interrupt source to prevent re-invocation of the same handler when interrupts are enabled.
 
-[^21]: More precisely—reserves. This is typically done by modifying the stack pointer.
+[^21]: More precisely: reserves. This is typically done by modifying the stack pointer.
 [^22]: And it has every right to do so.
 
-Brief conclusion: The motivation for using a separate interrupt stack correlates with the use of nested interrupts—since nesting significantly increases stack consumption in interrupt handlers, imposing—in the absence of a separate interrupt stack—additional requirements on process stack sizes[^23].
+Brief conclusion: the motivation for using a separate interrupt stack correlates with the use of nested interrupts: since nesting significantly increases stack consumption in interrupt handlers, imposing additional requirements (especially with absence of a separate interrupt stack) on process stack sizes[^23].
 
 !!! tip "**TIP**"
     When using a preemptive RTOS, it is possible to structure the program so that interrupt handlers serve only as event sources, with all event processing moved to the process level. This keeps interrupt handlers small and fast, in turn eliminating the need for both a separate interrupt stack and nested interrupt support. In this case, the interrupt handler body can be comparable in size to the overhead of switching to a separate interrupt stack and enabling nesting.
@@ -334,7 +335,7 @@ Brief conclusion: The motivation for using a separate interrupt stack correlates
 
 This approach is precisely what is recommended when the processor lacks hardware support for switching to a separate interrupt stack and does not have an interrupt controller with hardware nested interrupt support.
 
-It should be noted that a priority-based preemptive RTOS is, in a sense, analogous to a multi-level priority interrupt controller—it provides the ability to distribute code execution according to importance/urgency. For this reason, in most cases there is no need to place event-processing code at the interrupt level even when such a hardware controller is present; instead, use interrupts solely as event sources[^24] and move their processing to the process level. This is the recommended programming style.
+It should be noted that a priority-based preemptive RTOS is, in a sense, analogous to a multi-level priority interrupt controller: it provides the ability to distribute code execution according to importance/urgency. For this reason, in most cases there is no need to place event-processing code at the interrupt level even when such a hardware controller is present; instead, use interrupts solely as event sources[^24] and move their processing to the process level. This is the recommended programming style.
 
 [^24]: Making interrupt handlers as simple, short, and fast as possible.
 
@@ -395,7 +396,7 @@ Since this function is called inside the timer interrupt handler, upon returning
     
     Given that **scmRTOS** targets small microcontrollers operating in real-time environments, and considering that execution overhead[^29] is very low, the recommended system tick period is 1–10 ms.
     
-    An analogy can be drawn with other domains where smaller objects typically operate at higher frequencies: for example, a mouse's heartbeat is much faster than a human's, and a human's is faster than an elephant's, with agility being inversely related. A similar trend exists in engineering, so it is reasonable to expect shorter tick periods on smaller processors than on larger ones—in larger systems, overhead is generally higher due to greater loading of the more powerful processor and, consequently, reduced responsiveness.
+    An analogy can be drawn with other domains where smaller objects typically operate at higher frequencies: for example, a mouse's heartbeat is much faster than a human's, and a human's is faster than an elephant's, with agility being inversely related. A similar trend exists in engineering, so it is reasonable to expect shorter tick periods on smaller processors than on larger ones&nbsp;– in larger systems, overhead is generally higher due to greater loading of the more powerful processor and, consequently, reduced responsiveness.
 
 [^28]: For example, how would one implement dynamic LED display multiplexing with such a period when it is known that, for comfortable viewing with four digits, the digit refresh period must not exceed 5 ms?
 

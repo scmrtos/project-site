@@ -26,7 +26,7 @@ Configuration of the OS code for a target platform is achieved through:
 
 A critical and delicate part of the port code involves the implementation of assembly-language subroutines responsible for system startup, saving the context of the interrupted process, switching stack pointers, and restoring the context of the process gaining control, including the software interrupt handler that performs context switching. Implementing this code requires the port developer to have in-depth knowledge of the target hardware architecture at a low level, as well as proficiency in using the toolchain (compiler, assembler, linker) for mixed-language[^3] projects.
 
-[^3]: That is, projects containing source files in different programming languages—in this case, C++ and the assembly language of the target hardware platform.
+[^3]: That is, projects containing source files in different programming languages&nbsp;– in this case, C++ and the assembly language of the target hardware platform.
 
 The porting process primarily consists of identifying the required porting objects and implementing the platform-specific code.
 

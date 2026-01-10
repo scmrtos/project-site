@@ -5,11 +5,11 @@
 **scmRTOS** is a real-time operating system featuring priority-based preemptive multitasking. The OS supports up to 32 processes (including the system **IdleProc** process, i.e., up to 31 user processes), each with a unique priority. All processes are static, meaning their number is defined at the project build stage and they cannot be added or removed at runtime.
 
 <a name="avoid-dynamic-process"></a>
-The decision to forgo dynamic process creation is driven by resource conservation considerations, as resources in single-chip microcontrollers are limited. Dynamic process deletion is also not implemented, as it offers little benefit—the program memory used by the process is not freed, and RAM for subsequent use would require allocation/deallocation via a memory manager, which is a complex component that consumes significant resources and is generally not used in single-chip microcontroller projects[^1].
+The decision to forgo dynamic process creation is driven by resource conservation considerations, as resources in single-chip microcontrollers are limited. Dynamic process deletion is also not implemented, as it offers little benefit: the program memory used by the process is not freed, and RAM for subsequent use would require allocation/deallocation via a memory manager, which is a complex component that consumes significant resources and is generally not used in single-chip microcontroller projects[^1].
 
 In the current version, process priorities are also static: each process is assigned a priority at the project build stage, and the priority cannot be changed during program execution. This approach is motivated by the goal of making the system as lightweight as possible in terms of resource requirements while maintaining high responsiveness. Changing priorities during system operation is a non-trivial mechanism that, for correct operation, requires analyzing the state of the entire system (kernel, services) followed by modifications to kernel components and other OS parts (semaphores, event flags, etc.). This inevitably leads to prolonged periods with interrupts disabled, significantly degrading the system's dynamic characteristics.
 
-[^1]: This refers to the standard memory manager typically provided with development tools. There are situations where program operation requires storing data between function calls (i.e., automatic storage on the stack or in CPU registers is unsuitable), and the amount of such data is unknown at compile time—their creation and lifetime are determined by events occurring at runtime. The best approach for storing such data is in free memory—the "heap." These operations are usually handled by a memory manager.Thus, some applications cannot do without it, but given the resource consumption of standard memory managers, their use is often unacceptable.
+[^1]: This refers to the standard memory manager typically provided with development tools. There are situations where program operation requires storing data between function calls (i.e., automatic storage on the stack or in CPU registers is unsuitable), and the amount of such data is unknown at compile time&nbsp;– their creation and lifetime are determined by events occurring at runtime. The best approach for storing such data is in free memory&nbsp;– the "heap." These operations are usually handled by a memory manager.Thus, some applications cannot do without it, but given the resource consumption of standard memory managers, their use is often unacceptable.
 
     In such cases, a specialized memory manager tailored to the application's needs is frequently employed. Considering the above, creating a universal memory manager equally suitable for diverse projects is impractical, which explains the absence of a memory manager in **scmRTOS**.
 
@@ -52,7 +52,7 @@ The executable function must contain an infinite loop that serves as the main lo
 Listing 1. Process Execution Function
 ///
 
-Upon system startup, control is transferred to the process function, where declarations of used data (line 3) and initialization code (line 4) can be placed at the beginning, followed by the process's main loop (lines 5–8). User code must be written to prevent exiting the process function. For example, once entering the main loop, do not leave it (the primary approach), or if exiting the main loop, enter another loop (even an empty one) or an infinite "sleep" by calling the `sleep()` function[^2] without parameters (or with parameter "0")—see [The sleep() Function](processes.md#process-sleep) for details. The process code must not contain `return` statements.
+Upon system startup, control is transferred to the process function, where declarations of used data (line 3) and initialization code (line 4) can be placed at the beginning, followed by the process's main loop (lines 5–8). User code must be written to prevent exiting the process function. For example, once entering the main loop, do not leave it (the primary approach), or if exiting the main loop, enter another loop (even an empty one) or an infinite "sleep" by calling the `sleep()` function[^2] without parameters (or with parameter "0"), see [The sleep() Function](processes.md#process-sleep) for details. The process code must not contain `return` statements.
 
 [^2]: In this case, no other process should "wake" this sleeping process before exit, as it would lead to undefined behavior and likely cause the system to crash. The only safe action applicable to a process in this state is to terminate it (with the option to restart from the beginning); see [Process Restart](processes.md#process-restart).
 
@@ -86,7 +86,7 @@ The common part contains declarations and definitions for kernel functions, proc
 
 The platform-dependent part includes declarations and definitions specific to the target platform, compiler language extensions, etc. This encompasses assembly code for context switching and system startup, the stack frame initialization function, the critical section wrapper class definition, the interrupt handler for the hardware timer used as the system timer, and other platform-specific behavior.
 
-The project-dependent part consists of three header files with configuration macros, extension inclusions, and optional code for fine-tuning the OS to the specific project—such as type aliases for timeout variable bit widths, selection of the context switch interrupt source, and other means for optimal system operation.
+The project-dependent part consists of three header files with configuration macros, extension inclusions, and optional code for fine-tuning the OS to the specific project such as type aliases for timeout variable bit widths, selection of the context switch interrupt source, and other means for optimal system operation.
 
 Recommended file placement: common part in a separate `core` directory, platform-dependent part in a `<target>` directory (where `target` is the name of the target port), and project-dependent part directly in the project source files. This layout facilitates storage, portability, maintenance, and safer updates when upgrading to new versions.
 
@@ -147,7 +147,7 @@ If such a service is needed, the user can add it to the base set independently b
 
 **scmRTOS** provides the user with several functions for control:
 
-* `run()`. Intended for starting the OS. When this function is called, the actual operation of the RTOS begins—control is transferred to the processes, whose execution and mutual interaction are determined by the user program. After transferring control to the OS kernel code, the function does not regain it, and therefore no return from the function is provided.
+* `run()`. Intended for starting the OS. When this function is called, the actual operation of the RTOS begins: control is transferred to the processes, whose execution and mutual interaction are determined by the user program. After transferring control to the OS kernel code, the function does not regain it, and therefore no return from the function is provided.
 * `lock_system_timer()`. Blocks interrupts from the system timer. Since the selection and handling of the hardware part of the system timer are the responsibility of the project, the user must define the content of this function. The same applies to the paired function `unlock_system_timer()`.
 * `unlock_system_timer()`. Unblocks interrupts from the system timer.
 * `get_tick_count()`. Returns the number of system timer ticks. The system timer tick counter must be enabled during system configuration.
@@ -173,14 +173,14 @@ Using `TCritSect` is straightforward: at the point corresponding to the start of
 
 To facilitate working with source code and improve portability, the following type aliases are introduced:
 
-* `TProcessMap` – type for defining a variable that serves as a process map. Its size depends on the number of processes in the system. Each process corresponds to a unique tag—a mask with only one non-zero bit positioned according to the process's priority. The highest-priority process corresponds to the least significant bit (position 0)[^9]. With fewer than 8 user processes, the process map size is 8 bits. With 8 to 15, it is 16 bits; with 16 or more user processes, it is 32 bits.
+* `TProcessMap` – type for defining a variable that serves as a process map. Its size depends on the number of processes in the system. Each process corresponds to a unique tag&nbsp;– a mask with only one non-zero bit positioned according to the process's priority. The highest-priority process corresponds to the least significant bit (position 0)[^9]. With fewer than 8 user processes, the process map size is 8 bits. With 8 to 15, it is 16 bits; with 16 or more user processes, it is 32 bits.
 * `stack_item_t` – type for a stack element. Depends on the target architecture. For example, on 8-bit **AVR**, this type is defined as `uint8_t`; on 16-bit **MSP430**, as `uint16_t`; and on 32-bit platforms, typically as `uint32_t`.
 
-[^9]: This order is the default. If `scmRTOS_PRIORITY_ORDER` is defined as 1, the bit order in the process map is reversed—the most significant bit corresponds to the highest-priority process, and the least significant bit to the lowest-priority one. Reverse priority order can be useful for processors with hardware support for finding the first non-zero bit in a word, such as the **Blackfin** family.
+[^9]: This order is the default. If `scmRTOS_PRIORITY_ORDER` is defined as 1, the bit order in the process map is reversed: the most significant bit corresponds to the highest-priority process, and the least significant bit to the lowest-priority one. Reverse priority order can be useful for processors with hardware support for finding the first non-zero bit in a word, such as the **Blackfin** family.
 
 ### Using the OS
 
-As noted earlier, to achieve maximum efficiency, static mechanisms are used wherever possible—i.e., all functionality is determined at compile time.
+As noted earlier, to achieve maximum efficiency, static mechanisms are used wherever possible&nbsp;– i.e., all functionality is determined at compile time.
 
 This primarily concerns processes. Before using each process, its type must be defined[^10], specifying the process type name, its priority, and the size of the RAM area allocated for the [process stack](processes.md#process-stack). For example:
 
@@ -190,7 +190,7 @@ This primarily concerns processes. Before using each process, its type must be d
 OS::process<OS::pr2, 200> MainProc;
 ```
 
-This defines a process with priority `pr2` and a stack size of 200 bytes. Such a declaration may seem somewhat verbose due to its length, as referencing the process type requires writing the full expression—for example, when defining the process execution function[^11]:
+This defines a process with priority `pr2` and a stack size of 200 bytes. Such a declaration may seem somewhat verbose due to its length, as referencing the process type requires writing the full expression&nbsp;– for example, when defining the process execution function[^11]:
 
 [^11]: The execution function of a specific process is technically a full specialization of the `OS::process::exec()` template member function, so its definition uses the template specialization syntax `template<>`.
 
@@ -206,7 +206,7 @@ OS::process<OS::pr2, 200>
 
 A similar situation arises in other cases where referencing the process type is required. To eliminate this inconvenience, it is recommended to use **type aliases** introduced via `typedef` or `using`. This is the preferred coding style: first define type aliases for processes (preferably in a single header file for easy overview of all processes in the project), and then declare the actual process objects in the source files as needed. With this approach, the earlier example becomes[^12]:
 
-[^12]: It is recommended to declare a prototype of the process execution function specialization before the first instantiation of the template—this allows the compiler to recognize that a full specialization exists for that instance, avoiding attempts to generate the default template implementation. In some cases, this prevents compilation errors.
+[^12]: It is recommended to declare a prototype of the process execution function specialization before the first instantiation of the template: this allows the compiler to recognize that a full specialization exists for that instance, avoiding attempts to generate the default template implementation. In some cases, this prevents compilation errors.
 
 ```cpp
 // In a header file
@@ -224,12 +224,12 @@ template<> void TMainProc::exec()
 ...
 ```
 
-There is nothing unusual about this sequence—it is the standard way of defining a type alias and creating an object of that type in C and C++.
+There is nothing unusual about this sequence&nbsp;– it is the standard way of defining a type alias and creating an object of that type in C and C++.
 
 !!! warning "**IMPORTANT NOTE**"
     When configuring the system, the number of processes must be explicitly specified. This number must exactly match the number of processes actually defined in the project; otherwise, the system will not function correctly. Note that priorities are specified using a dedicated enumerated type `TPriority`, which defines the allowed priority values[^13].
 
-    Additionally, process priorities must be consecutive with no gaps. For example, if the system has 4 processes, their priorities must be `pr0`, `pr1`, `pr2`, and `pr3`. Duplicate priority values are also not allowed—each process must have a unique priority.
+    Additionally, process priorities must be consecutive with no gaps. For example, if the system has 4 processes, their priorities must be `pr0`, `pr1`, `pr2`, and `pr3`. Duplicate priority values are also not allowed, each process must have a unique priority.
 
     For instance, with 4 user processes (resulting in 5 processes total, including the system `IdleProc`), the priorities should be `pr0`, `pr1`, `pr2`, `pr3` (`prIDLE` is reserved for `IdleProc`), where `pr0` is the highest-priority process and `pr3` is the lowest-priority user process. The lowest-priority process overall is always `IdleProc`. This process exists permanently in the system and does not need to be declared. It receives control whenever all user processes are inactive.
 
@@ -237,7 +237,7 @@ There is nothing unusual about this sequence—it is the standard way of definin
 
     A dedicated tool currently exists to perform comprehensive configuration integrity checking. The utility is called **scmIC** (Integrity Checker) and can detect the vast majority of typical OS configuration errors.
 
-[^13]: This is done to improve type safety—arbitrary integer values cannot be used; only those defined in `TPriority` are permitted. The values in `TPriority` are tied to the process count specified via the configuration macro `scmRTOS_PROCESS_COUNT`. Thus, only a limited, valid set of priorities is available. Priority values take the form `pr0`, `pr1`, etc., where the number indicates the priority level. The system `IdleProc` process has its own dedicated priority designation: `prIDLE`.
+[^13]: This is done to improve type safety&nbsp;– arbitrary integer values cannot be used; only those defined in `TPriority` are permitted. The values in `TPriority` are tied to the process count specified via the configuration macro `scmRTOS_PROCESS_COUNT`. Thus, only a limited, valid set of priorities is available. Priority values take the form `pr0`, `pr1`, etc., where the number indicates the priority level. The system `IdleProc` process has its own dedicated priority designation: `prIDLE`.
 
 As mentioned earlier, defining process types in a header file is convenient, as it makes any process easily visible across different compilation units.
 

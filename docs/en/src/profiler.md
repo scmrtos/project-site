@@ -124,7 +124,7 @@ Integrating the profiler into a project is done by including the header file `pr
 
 #### Statistical (Sampling) Method
 
-For the statistical method, the call to `advance_counters()` should be placed in code that executes periodically at equal time intervals—for example, in an interrupt handler of a hardware timer. In **scmRTOS**, the system timer interrupt handler is well-suited for this purpose; the call to `advance_counters()` is placed in the user hook for the system timer, which must be enabled during configuration. In this case, `time_interval()` should always return 1.
+For the statistical method, the call to `advance_counters()` should be placed in code that executes periodically at equal time intervals&nbsp;– for example, in an interrupt handler of a hardware timer. In **scmRTOS**, the system timer interrupt handler is well-suited for this purpose; the call to `advance_counters()` is placed in the user hook for the system timer, which must be enabled during configuration. In this case, `time_interval()` should always return 1.
 
 #### Measurement Method
 

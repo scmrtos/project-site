@@ -124,7 +124,7 @@ Listing 1. TBaseProcess
 
 Despite the seemingly extensive class definition, `TBaseProcess` is actually quite small and simple. Its data representation consists of just three core members: the stack pointer (line 79), the timeout tick counter (line 80), and the priority value (line 81). The remaining data members are auxiliary and appear only when additional features are enabled&nbsp;– such as the ability to interrupt and restart a process at any point, or debugging support[^3].
 
-[^3]: This applies to the rest of the code as well—the majority of the class definition is devoted to these optional capabilities.
+[^3]: This applies to the rest of the code as well&nbsp;– the majority of the class definition is devoted to these optional capabilities.
 
 The class interface provides the following functions:
 
@@ -362,4 +362,4 @@ The `terminate()` function can accept a pointer to a function as an argument; th
 
 Starting the process is performed separately&nbsp;– allowing the user to do so at the moment they deem appropriate&nbsp;– using the `start()` function, which simply marks the process as ready-to-run. The process will resume execution according to its priority and the current OS load.
 
-For process termination and restart to work correctly, this feature must be enabled during configuration—the macro `scmRTOS_PROCESS_RESTART_ENABLE` must be set to 1.
+For process termination and restart to work correctly, this feature must be enabled during configuration&nbsp;– the macro `scmRTOS_PROCESS_RESTART_ENABLE` must be set to 1.

@@ -91,4 +91,4 @@ A function called from OS code whose body must be defined by the user. This allo
 A time interval, specified by an integer-type object, used for organizing conditional or unconditional event waiting by processes.
 
 #### TOS  
-Top Of Stack—the address of the stack element pointed to by the processor's hardware stack pointer.
+Top Of Stack&nbsp;– the address of the stack element pointed to by the processor's hardware stack pointer.
