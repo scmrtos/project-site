@@ -22,17 +22,4 @@
 
 ### Поддерживаемые платформы
 
-В настоящее время **scmRTOS** поддерживает следующие платформы (процессор/тулчейн):
-
-* MSP430/IAR Systems;
-* MSP430/GCC;
-* AVR/IAR Systems;
-* AVR/GCC;
-* Cortex-M/GCC;
-* Cortex-M/IAR Systems;
-* Cortex-A/GCC;
-* ARM7/GCC;
-* Blackfin/VisualDSP++;
-* Blackfin/GCC;
-* Blackfin/CCES;
-* STM8/IAR Systems.
+В настоящее время **scmRTOS** поддерживает ряд целевых платформ, с перечень которых приведён в [Таблице поддерживаемых платформ](../platforms.md).

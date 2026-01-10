@@ -19,17 +19,4 @@ In embedded systems development, C++ is sometimes viewed unfavorably due to misc
 
 ### Supported Platforms
 
-**scmRTOS** currently supports the following platforms (processor/toolchain):
-
-* MSP430/IAR Systems;
-* MSP430/GCC;
-* AVR/IAR Systems;
-* AVR/GCC;
-* Cortex-M/GCC;
-* Cortex-M/IAR Systems;
-* Cortex-A/GCC;
-* ARM7/GCC;
-* Blackfin/VisualDSP++;
-* Blackfin/GCC;
-* Blackfin/CCES;
-* STM8/IAR Systems.
+**scmRTOS** currently supports a number of target platforms, see [Supported Platforms Table](../platforms.md) for details.
