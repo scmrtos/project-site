@@ -24,20 +24,20 @@ nav:
     - Supported Platforms                : platforms.md
 
     - Intro:
-        - Preface                        : src/preface.md 
-        - Overview                       : src/overview.md
+        - Preface                        : preface.md 
+        - Overview                       : overview.md
     
     - RTOS Components:
-        - Kernel                         : src/kernel.md
-        - Processes                      : src/processes.md
-        - Interprocess Communications    : src/ipcs.md
-        - Ports                          : src/ports.md
+        - Kernel                         : kernel.md
+        - Processes                      : processes.md
+        - Interprocess Communications    : ipcs.md
+        - Ports                          : ports.md
 
     - Appendix:
-        - Debug                          : src/debug.md
-        - Process Profiling              : src/profiler.md
-        - 'Example: Job Queue'           : src/example-job-queue.md
-        - Glossary                       : src/glossary.md
+        - Debug                          : debug.md
+        - Process Profiling              : profiler.md
+        - 'Example: Job Queue'           : example-job-queue.md
+        - Glossary                       : glossary.md
 
 extra_javascript:
     - js/mathjax.js
@@ -97,20 +97,20 @@ plugins:
                 - Поддерживаемые платформы           : platforms.md
 
                 - Введение:
-                    - Предисловие                    : src/preface.md 
-                    - Обзор операционной системы     : src/overview.md
+                    - Предисловие                    : preface.md 
+                    - Обзор операционной системы     : overview.md
                 
                 - Компоненты:
-                    - Ядро                           : src/kernel.md
-                    - Процессы                       : src/processes.md
-                    - Межпроцессное взаимодействие   : src/ipcs.md
-                    - Порты                          : src/ports.md
+                    - Ядро                           : kernel.md
+                    - Процессы                       : processes.md
+                    - Межпроцессное взаимодействие   : ipcs.md
+                    - Порты                          : ports.md
 
                 - Приложения:
-                    - Отладка                        : src/debug.md
-                    - Профилировка процессов         : src/profiler.md
-                    - 'Пример: очередь заданий'      : src/example-job-queue.md
-                    - Термины и сокращения           : src/glossary.md
+                    - Отладка                        : debug.md
+                    - Профилировка процессов         : profiler.md
+                    - 'Пример: очередь заданий'      : example-job-queue.md
+                    - Термины и сокращения           : glossary.md
 
 
           #default_language: en
