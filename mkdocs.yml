@@ -19,7 +19,7 @@ extra_css:
 
 
 nav:
-    - Synopsys                           : index.md 
+    - Synopsis                           : index.md 
     - Features                           : features.md
     - Supported Platforms                : platforms.md
 

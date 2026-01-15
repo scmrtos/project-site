@@ -1,8 +1,6 @@
 # Kernel
 
----
-
-## General Information
+## Brief Information
 
 The OS kernel performs:
 
@@ -16,9 +14,7 @@ The core of the system is the `TKernel` class, which includes all the necessary 
 
 It should be noted that in this context, the kernel refers not only to the `TKernel` object but also to the extension mechanism implemented as the `TKernelAgent` class. This class was specifically introduced to provide a base for building extensions. Looking ahead, all interprocess communication services in **scmRTOS** are implemented as such extensions. The `TKernelAgent` class is declared as a "friend" of `TKernel` and contains the minimal necessary set of protected functions to grant descendants access to kernel resources. Extensions are built by inheriting from `TKernelAgent`. For more details, see [TKernelAgent and Extensions](kernel.md#kernel-agent).
 
----
-
-## TKernel. Composition and Operation
+## TKernel Class
 
 ### Composition
 
@@ -242,9 +238,11 @@ Listing 4. Scheduler variant optimized for use in ISR
 When selecting an interrupt handler for context switching, preference should be given to one with the lowest priority (in the case of a priority interrupt controller). This avoids unnecessary rescheduling and context switches if multiple interrupts occur in succession.
 
 ### Pros and Cons of Control Transfer Methods  
+
 Both methods have their advantages and disadvantages. The strengths of one control transfer method are the weaknesses of the other, and vice versa.
 
 #### Direct Control Transfer  
+
 The main advantage of direct control transfer is that it does not require a special software interrupt in the target MCU&nbsp;– not all MCUs have this hardware capability. A secondary minor benefit is slightly higher performance compared to the software interrupt variant, as the latter incurs additional overhead for activating the context switch interrupt handler, the wait cycle for context switching, and the call to `os_context_switch_hook()`.
 
 However, the direct control transfer variant has a significant drawback: when the scheduler is called from an interrupt handler, the compiler is forced to save the "local context" (scratch registers of the processor) due to the call to a non-inlined context switch function, which introduces overhead that can be substantial compared to the rest of the ISR code. The negative aspect here is that saving these registers may be entirely unnecessary: after all, in that function[^11], which causes them to be saved, these registers are not used. Therefore, if there are no further calls to non-inlined functions, the code for saving and restoring this group of registers turns out to be redundant.
@@ -255,6 +253,7 @@ os_context_switcher(stack_item_t **Curr_SP, stack_item_t *Next_SP)
 ```
 
 #### Software Interrupt-Based Control Transfer  
+
 This variant avoids the aforementioned drawback. Since the ISR itself executes normally without rescheduling from within it, saving the "local context" is also not performed, significantly reducing overhead and improving system performance. To avoid spoiling the picture by calling a non-inlined member function of an interprocess communication service object, it is recommended to use special lightweight, inline versions of such functions&nbsp;– for more details, see [the Interprocess Communication section](ipcs.md).
 
 The main disadvantage of software interrupt-based control transfer is that not all hardware platforms support software interrupts. In such cases, one of the unused hardware interrupts can be used as a software interrupt. Unfortunately, this introduces some lack of universality&nbsp;– it is not known in advance whether a particular hardware interrupt will be needed in a given project. Therefore, if the processor does not specifically provide a suitable interrupt, the choice of context switch interrupt is delegated (from the port level) to the project level, and the user must write the corresponding code[^12] themselves.
@@ -264,6 +263,7 @@ The main disadvantage of software interrupt-based control transfer is that not a
 When using software interrupt-based control transfer, the expression "The kernel takes control away from processes" fully reflects the situation.
 
 #### Conclusions  
+
 Given the above analysis of the advantages and disadvantages of both control transfer methods, the general recommendation is as follows: if the target platform provides a suitable interrupt for implementing context switching, it makes sense to use this variant, especially if the size of the "local context" is sufficiently large.
 
 Using direct control transfer is justified when it is truly impossible to use a software interrupt&nbsp;– for example, when the target platform does not support such an interrupt, and using a hardware interrupt as a software one is impossible for one reason or another, or if the performance characteristics with this control transfer variant prove better due to lower overhead in organizing context switches, while saving/restoring the "local context" does not introduce noticeable overhead due to its small size[^13].
@@ -271,6 +271,7 @@ Using direct control transfer is justified when it is truly impossible to use a 
 [^13]: For example, on **MSP430**/IAR, the "local context" consists of just 4 registers.
 
 ### Support for Interprocess Communication  
+
 Support for interprocess communication boils down to providing a set of functions for monitoring process states, as well as granting access to rescheduling mechanisms for the OS components&nbsp;– interprocess communication services. For more details on this, see [the Interprocess Communication section](ipcs.md).
 
 ### Interrupts
@@ -318,6 +319,7 @@ Based on the above, the following recommendation can be made.
 [^20]: Here, "context" refers to the logical and semantic environment in which this part of the program executes.
 
 !!! error "**WARNING**"
+
     Despite the apparent advantages of a separate interrupt stack, it is not recommended on processors lacking hardware support for switching the stack pointer to the interrupt stack.
     This is due to additional overhead from manual stack switching, poor portability—any non-standard extensions are a source of problems—and the fact that direct manipulation of the stack pointer can cause collisions with local object addressing. For example, the compiler, seeing the body of the interrupt handler and allocates[^21] memory for local objects on the stack before calling[^22] the wrapper constructor. As a result, after switching the stack pointer to the interrupt stack, the previously allocated memory will physically reside elsewhere, causing the program to malfunction, while the compiler cannot detect this issue.
     
@@ -329,6 +331,7 @@ Based on the above, the following recommendation can be made.
 Brief conclusion: the motivation for using a separate interrupt stack correlates with the use of nested interrupts: since nesting significantly increases stack consumption in interrupt handlers, imposing additional requirements (especially with absence of a separate interrupt stack) on process stack sizes[^23].
 
 !!! tip "**TIP**"
+
     When using a preemptive RTOS, it is possible to structure the program so that interrupt handlers serve only as event sources, with all event processing moved to the process level. This keeps interrupt handlers small and fast, in turn eliminating the need for both a separate interrupt stack and nested interrupt support. In this case, the interrupt handler body can be comparable in size to the overhead of switching to a separate interrupt stack and enabling nesting.
 
 [^23]: Moreover, each process must have a stack large enough to cover both its own needs and the stack consumption of interrupt handlers, including the full nesting hierarchy.
@@ -377,7 +380,6 @@ The system timer functionality is implemented in the kernel function `system_tim
 25        }
 26    }
 ```
-
 /// Caption  
 Listing 5. System Timer  
 ///
@@ -392,6 +394,7 @@ As can be seen from the source code, the actions are very straightforward:
 Since this function is called inside the timer interrupt handler, upon returning to the main program (as described earlier), control will be transferred to the highest-priority ready-to-run process. Thus, if the timeout of a process with higher priority than the interrupted one has expired, that process will receive control after exiting the interrupt. This is achieved through the scheduler (see above).
 
 !!! info "**NOTE**"
+
     Some RTOSes provide recommendations for the system tick duration, most commonly suggesting a range of 10[^28]–100 ms. This may be appropriate for those systems. The trade-off here is between minimizing overhead from system timer interrupts and achieving finer time resolution.
     
     Given that **scmRTOS** targets small microcontrollers operating in real-time environments, and considering that execution overhead[^29] is very low, the recommended system tick period is 1–10 ms.
@@ -402,9 +405,9 @@ Since this function is called inside the timer interrupt handler, upon returning
 
 [^29]: Due to the small number of processes and the simple, fast scheduler.
 
-----
 
 <a name="kernel-agent"></a>
+
 ## TKernelAgent and Extensions
 
 ### Kernel Agent
@@ -444,7 +447,6 @@ The code for the kernel agent class is shown in "Listing 6. TKernelAgent".
 22     #endif
 23     };                                                                                         
 ```                                
-
 /// Caption  
 Listing 6. TKernelAgent  
 ///

@@ -1,4 +1,4 @@
-# scmRTOS
+# Preface
 
 The acronym **scmRTOS** stands for **Single-Chip Microcontroller Real-Time Operating System**.
 
@@ -15,6 +15,7 @@ In embedded systems development, C++ is sometimes viewed unfavorably due to misc
 **scmRTOS** prioritizes ease of use. This is facilitated by object-oriented design, where classes encapsulate internal details and expose only a well-defined interface, thereby minimizing the risk of incorrect usage of operating system components.
 
 !!! tip "**TIP**"
+
     The history of **scmRTOS** and certain "philosophical" considerations regarding real-time operating systems are detailed in the [PDF document](https://github.com/scmrtos/scmrtos-doc/blob/master/pdf/scmRTOS.en.pdf).
 
 ### Supported Platforms

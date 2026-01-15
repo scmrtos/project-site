@@ -1,10 +1,11 @@
 # Operating System Overview
 
-## General Information
+## General
 
 **scmRTOS** is a real-time operating system featuring priority-based preemptive multitasking. The OS supports up to 32 processes (including the system **IdleProc** process, i.e., up to 31 user processes), each with a unique priority. All processes are static, meaning their number is defined at the project build stage and they cannot be added or removed at runtime.
 
 <a name="avoid-dynamic-process"></a>
+
 The decision to forgo dynamic process creation is driven by resource conservation considerations, as resources in single-chip microcontrollers are limited. Dynamic process deletion is also not implemented, as it offers little benefit: the program memory used by the process is not freed, and RAM for subsequent use would require allocation/deallocation via a memory manager, which is a complex component that consumes significant resources and is generally not used in single-chip microcontroller projects[^1].
 
 In the current version, process priorities are also static: each process is assigned a priority at the project build stage, and the priority cannot be changed during program execution. This approach is motivated by the goal of making the system as lightweight as possible in terms of resource requirements while maintaining high responsiveness. Changing priorities during system operation is a non-trivial mechanism that, for correct operation, requires analyzing the state of the entire system (kernel, services) followed by modifications to kernel components and other OS parts (semaphores, event flags, etc.). This inevitably leads to prolonged periods with interrupts disabled, significantly degrading the system's dynamic characteristics.
@@ -36,6 +37,7 @@ Processes provide the ability to create a separate (asynchronous with respect to
 The executable function must contain an infinite loop that serves as the main loop of the process, see "Listing 1. Process executable function" for an example.
 
 <a name="process-exec"></a>
+
 ```cpp
 1    template<> void slon_proc::exec()
 2    {
@@ -57,6 +59,7 @@ Upon system startup, control is transferred to the process function, where decla
 [^2]: In this case, no other process should "wake" this sleeping process before exit, as it would lead to undefined behavior and likely cause the system to crash. The only safe action applicable to a process in this state is to terminate it (with the option to restart from the beginning); see [Process Restart](processes.md#process-restart).
 
 !!! info "**NOTE**"
+
     In the example shown, the role of the process executable function is played by the `exec()` function&nbsp;– a static member function of the class that describes the process type. This is not the only way to define a process executable function: in addition to a static member function, any function of the form `void fun()` can be used, whose address must be passed to the process constructor. This includes the ability to inline the function body as a constructor argument using the C++ lambda function mechanism. For more details see ["Alternative Ways to Declare a Process Object"](processes.md#process-alternate-exec)
 
 
@@ -67,9 +70,9 @@ Since processes execute in parallel and asynchronously relative to each other, s
 
 To prevent such issues, special measures are required: access within critical sections (where context switching is disabled) or using dedicated interprocess communication services. In **scmRTOS**, these include:
 
-* Event flags (`OS::TEventFlag`);
-* Mutual exclusion semaphores (`OS::TMutex`);
-* Channels for data transfer as queues of bytes or arbitrary-type objects (`OS::channel`);
+* Event flags (`OS::TEventFlag`).
+* Mutual exclusion semaphores (`OS::TMutex`).
+* Channels for data transfer as queues of bytes or arbitrary-type objects (`OS::channel`).
 * Messages (`OS::message`).
 
 The developer must decide which service (or combination) to use in each case, based on task requirements, available resources, and personal preferences.
@@ -227,6 +230,7 @@ template<> void TMainProc::exec()
 There is nothing unusual about this sequence&nbsp;– it is the standard way of defining a type alias and creating an object of that type in C and C++.
 
 !!! warning "**IMPORTANT NOTE**"
+
     When configuring the system, the number of processes must be explicitly specified. This number must exactly match the number of processes actually defined in the project; otherwise, the system will not function correctly. Note that priorities are specified using a dedicated enumerated type `TPriority`, which defines the allowed priority values[^13].
 
     Additionally, process priorities must be consecutive with no gaps. For example, if the system has 4 processes, their priorities must be `pr0`, `pr1`, `pr2`, and `pr3`. Duplicate priority values are also not allowed, each process must have a unique priority.
@@ -287,27 +291,56 @@ Listing 3. Declaring Processes in a Source File and Starting the OS
 
 Each process, as mentioned earlier, has an executable function. When using the scheme described above, this executable function is named `exec` and looks as shown in "Listing 1. Process Execution Function".
 
-Configuration information is specified in a dedicated header file `scmRTOS_config.h`. The list of configuration macros and their meanings[^14] are provided in "Table 1. Configuration Macros".
+Configuration information is specified in a dedicated header file `scmRTOS_config.h`. The list of configuration macros and their meanings[^14] are provided below.
 
 [^14]: The table shows example values. In each project, values are set individually based on project requirements.
 
-| Name                                      | Value   | Description                                                                 |
-|-------------------------------------------|---------|-----------------------------------------------------------------------------|
-| `scmRTOS_PROCESS_COUNT`                   | n       | Number of processes in the system                                           |
-| `scmRTOS_SYSTIMER_NEST_INTS_ENABLE`       | 0/1     | Enables nested interrupts in the system timer interrupt handler[^15]         |
-| `scmRTOS_SYSTEM_TICKS_ENABLE`             | 0/1     | Enables the system timer tick counter                                        |
-| `scmRTOS_SYSTIMER_HOOK_ENABLE`            | 0/1     | Enables calling the user-defined function<br>`system_timer_user_hook()` in the system timer interrupt<br> handler. If enabled, this function must be defined in user code |
-| `scmRTOS_IDLE_HOOK_ENABLE`                | 0/1     | Enables calling the user-defined function<br> `idle_process_user_hook()` in the `IdleProc` system process.<br> If enabled, this function must be defined in user code |
-| `scmRTOS_ISRW_TYPE`                       | `TISRW`<br>`TISRW_SS` | Selects the type of interrupt handler wrapper class for the system<br> timer: regular or with switching to a separate interrupt stack.<br>The `_SS` suffix stands for Separate Stack |
-| `scmRTOS_CONTEXT_SWITCH_SCHEME`           | 0/1     | Specifies the context switch method (scheme for transferring<br> control)       |
-| `scmRTOS_PRIORITY_ORDER`                  | 0/1     | Defines the priority order in the process map.<br>Value 0 means the highest-priority process corresponds to the<br> least significant bit in the process map (`TProcessMap`); value 1<br> means the highest-priority process corresponds to the most<br> significant (valid) bit |
-| `scmRTOS_IDLE_PROCESS_STACK_SIZE`         | N       | Sets the stack size for the background `IdleProc` process                   |
-| `scmRTOS_CONTEXT_SWITCH_USER_HOOK_ENABLE` | 0/1     | Enables calling the user-defined hook <br>`context_switch_user_hook()` during context switches. If enabled, the function must be defined<br> in user code |
-| `scmRTOS_DEBUG_ENABLE`                    | 0/1     | Enables debugging features                                                  |
-| `scmRTOS_PROCESS_RESTART_ENABLE`          | 0/1     | Allows interrupting any process at an arbitrary moment and<br> restarting it from the beginning |
+  * `scmRTOS_PROCESS_COUNT`
+    * **value** :  n
+    * **description** : Number of processes in the system.
+  
+  * `scmRTOS_SYSTIMER_NEST_INTS_ENABLE`
+    * **value** : 0/1.
+    * **description** : Enables nested interrupts in the system timer interrupt handler[^15].
+  
+  * `scmRTOS_SYSTEM_TICKS_ENABLE`
+    * **value** : 0/1.
+    * **description** : Enables the system timer tick counter.
+  
+  * `scmRTOS_SYSTIMER_HOOK_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables calling the user-defined function `system_timer_user_hook()` in the system timer interrupt handler. If enabled, this function must be defined in user code.
 
-/// Caption
-Table 1. Configuration Macros
-///
+  * `scmRTOS_IDLE_HOOK_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables calling the user-defined function `idle_process_user_hook()` in the `IdleProc` system process. If enabled, this function must be defined in user code.
+  
+  * `scmRTOS_ISRW_TYPE`
+    * **value**: `TISRW`/`TISRW_SS`.
+    * **description**: Selects the type of interrupt handler wrapper class for the system timer: regular or with switching to a separate interrupt stack. The `_SS` suffix stands for Separate Stack.
+
+  * `scmRTOS_CONTEXT_SWITCH_SCHEME`
+    * **value**: 0/1.
+    * **description**: Specifies the context switch method (scheme for transferring control).
+
+  * `scmRTOS_PRIORITY_ORDER`
+    * **value**: 0/1.
+    * **description**: Defines the priority order in the process map. Value 0 means the highest-priority process corresponds to the least significant bit in the process map (`TProcessMap`); value 1 means the highest-priority process corresponds to the most significant (valid) bit.
+
+  * `scmRTOS_IDLE_PROCESS_STACK_SIZE`
+    * **value**: N.
+    * **description**: Sets the stack size for the background `IdleProc` process.
+
+  * `scmRTOS_CONTEXT_SWITCH_USER_HOOK_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables calling the user-defined hook `context_switch_user_hook()` during context switches. If enabled, the function must be defined in user code.
+
+  * `scmRTOS_DEBUG_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables debugging features.
+
+  * `scmRTOS_PROCESS_RESTART_ENABLE`
+    * **value**: 0/1.
+    * **description**: Allows interrupting any process at an arbitrary moment and restarting it from the beginning.
 
 [^15]: If the port supports only one variant, the corresponding macro value is predefined in the port. The same applies to all other macros.

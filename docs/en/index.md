@@ -1,4 +1,4 @@
-# Synopys
+# Synopsis
 
 **scmRTOS** is compact Real-Time Preemptive Operating System intended for use with Single-Chip Microcontrollers. 
 
