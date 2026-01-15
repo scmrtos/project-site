@@ -33,6 +33,8 @@ src_en = [str(Path(path_en) / i) for i in src_list]
 
 print_info(os.getcwd())
 
+Path(BUILD_DIR).mkdir(exist_ok=True)
+
 if md2tex(src_en, tex_eng):
     if not tex2pdf(tex_eng):
         sys.exit(-2)
