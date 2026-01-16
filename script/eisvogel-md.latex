@@ -993,37 +993,6 @@ $endif$
 
 \usepackage{lstfiracode}
 
-
-%\lstset{
-  %language=C++,
-  %keywordstyle=\color{blue!100!black}\bfseries,
-  %stringstyle=\color{red!80!black},
-  %commentstyle=\color{yellow!50!black}\itshape,
-  %numberstyle=\tiny\color{gray!50},
-  %numbers=none,
-  %literate=*
-    %{\{}{{\textcolor{magenta}{\{}}}{1}
-    %{\}}{{\textcolor{magenta}{\}}}}{1}
-    %{(}{{\textcolor{magenta}{(}}}{1}
-    %{)}{{\textcolor{magenta}{)}}}{1}
-    %{[}{{\textcolor{magenta}{[}}}{1}
-    %{]}{{\textcolor{magenta}{]}}}{1}
-    %{=}{{\textcolor{blue}{=}}}{1}
-    %{+}{{\textcolor{blue}{+}}}{1}
-    %{-}{{\textcolor{blue}{-}}}{1}
-    %{*}{{\textcolor{blue}{*}}}{1}
-    %{/}{{\textcolor{blue}{/}}}{1}
-    %{;}{{\textcolor{blue}{;}}}{1}
-    %{:}{{\textcolor{blue}{:}}}{1}
-    %{>}{{\textcolor{blue}{>}}}{1}
-    %{<}{{\textcolor{blue}{<}}}{1}
-    %{\&}{{\textcolor{blue}{\&}}}{1}
-    %{|}{{\textcolor{blue}{|}}}{1}
-    %{!}{{\textcolor{blue}{!}}}{1}
-    %{~}{{\textcolor{blue}{\textasciitilde{}}}}{1}
-    %{?}{{\textcolor{blue}{?}}}{1}
-%}
-
 \AtBeginEnvironment{lstlisting}{
   \needspace{3\baselineskip}
 }
