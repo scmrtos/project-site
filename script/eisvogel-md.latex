@@ -1066,6 +1066,9 @@ $endif$
 \postauthor{\end{center}\vspace{0.8cm}}
 \predate{\begin{center}\large\itshape}
 \postdate{\end{center}\vspace{2cm}}
+
+%-------------------------------------------------------------------------------
+
 \begin{document}
 
 $if(titlepage)$
@@ -1103,8 +1106,13 @@ $if(titlepage-background)$
   {\Large \textsf{$subtitle$}}
   $endif$
   \vskip 2em
-  \noindent {\Large \textsf{$for(author)$$author$$sep$, $endfor$} \vskip 0.6em \textsf{$date$}}
-  \vfill
+  %\noindent {\huge \textsf{$for(author)$$author$$sep$, $endfor$} \vskip 0.6em \textsf{$date$}}
+  \noindent {\huge \textsf{$for(author)$$author$$sep$, $endfor$}} 
+  \vskip 0.6em 
+  \begin{center}
+  {\huge\textsf{$titledate$}}
+  \end{center}
+ % \vfill
 }
 $else$
 {
