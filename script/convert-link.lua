@@ -16,6 +16,6 @@ function Link(el)
         el.target = '#' .. anchor
     end
     
-    print(el.target)
+    --print(el.target)
     return el
 end
