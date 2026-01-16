@@ -7,6 +7,7 @@ pd_opt = [
     '--lua-filter=script/br2newline.lua',
     '--lua-filter=script/md2admon.lua',
     '--lua-filter=script/caption.lua',
+    '--lua-filter=script/convert-link.lua',
     '--filter', 'pandoc-latex-environment',
     '--filter', 'pandoc-minted',
     '--template=script/eisvogel-md.latex',
