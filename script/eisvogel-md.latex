@@ -1033,6 +1033,31 @@ $endif$
 \clubpenalty=10000   % disable orphans for paragraph
 \widowpenalty=10000  % disable widows before paragraph
 \brokenpenalty=4999  % disable breaks before display-material
+
+\usepackage[bottom]{footmisc}
+
+\usepackage{enumitem}
+\usepackage{tikz}
+
+%  list markers
+%  level 1
+\newcommand{\tikzbullet}{%
+    \tikz[baseline=-0.5ex]{%
+        \filldraw[black] (0,0) circle (0.25ex);
+    }%
+}
+%  level 2
+\newcommand{\tikztriangle}{%
+    \tikz[baseline=-0.5ex]{%
+        \draw[black, fill=black] (0,0) -- (0.5ex,0.25ex) -- (0,0.5ex) -- cycle;
+    }%
+}
+
+%  redefine list markers (for KOMA)
+\AtBeginDocument{%
+    \renewcommand{\labelitemi}{\tikzbullet}%
+    \renewcommand{\labelitemii}{\tikztriangle}%
+}
 \begin{document}
 
 $if(titlepage)$
