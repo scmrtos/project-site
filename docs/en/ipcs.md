@@ -538,7 +538,7 @@ The template definition is shown in "Listing 9. OS::message".
 
 As can be seen from the listing, the message template is built upon the `TBaseMessage` class. This is done for efficiency reasons&nbsp;– to avoid duplicating common code across template instantiations. The code shared by all messages is factored out into the base class[^ipcs-18].
 
-[^ipcs-18]: The same technique is used in the process implementation: the pair `class TBaseProcess`&nbsp;– `template process<>`.
+[^ipcs-18]: The same technique is used in the process implementation: the pair `class TBaseProcess`&nbsp;– `template process`.
 
 ```cpp
 01    class TBaseMessage : public TService
