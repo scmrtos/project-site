@@ -342,7 +342,7 @@ To support this, the OS provides two functions to the user:
 * `OS::process::terminate(void (*func)() = 0)`;
 * `OS::TBaseProcess::start()`.
 
-#### Terminate Process Execution
+### Terminate Process Execution
 
 The `terminate()` function is intended to be called from outside the process being stopped. Inside it, all resources associated with the process are reset to their initial state, and the process is marked as not ready-to-run. If the process was waiting on a service, its tag is removed from that service's waiting process map.
 
@@ -356,7 +356,7 @@ The `terminate()` function can accept a pointer to a function as an argument; th
     
     Changing process priorities or stack sizes is not possible—these parameters are set statically during OS configuration—but in many cases this is not required, since the resources needed to perform tasks are usually known at build time.
 
-#### Start Process Execution
+### Start Process Execution
 
 Starting the process is performed separately&nbsp;– allowing the user to do so at the moment they deem appropriate&nbsp;– using the `start()` function, which simply marks the process as ready-to-run. The process will resume execution according to its priority and the current OS load.
 
