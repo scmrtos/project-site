@@ -1029,6 +1029,10 @@ $endif$
     linenos=false % remome line numbers
 }
 
+% globally disable orphan lines before listings
+\clubpenalty=10000   % disable orphans for paragraph
+\widowpenalty=10000  % disable widows before paragraph
+\brokenpenalty=4999  % disable breaks before display-material
 \begin{document}
 
 $if(titlepage)$
