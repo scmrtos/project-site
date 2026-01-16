@@ -893,7 +893,7 @@ $endif$
 %
 $if(disable-header-and-footer)$
 $else$
-\usepackage[headsepline,footsepline]{scrlayer-scrpage}
+\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
 
 \newpairofpagestyles{eisvogel-header-footer}{
   \clearpairofpagestyles
