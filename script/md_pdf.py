@@ -105,9 +105,9 @@ def md2pdf(src, trg):
         toc_hdr = 'Содержание'
         print_info('build Russian User Manual')
 
-    title_bg  = ['-V', f'titlepage-background=docs/img/title-bg-{lang}.png'] 
+    title_bg  = ['-V', f'titlepage-background=docs/img/title-bg-{lang}.png']
     toc_title = ['-V', f'toc-title={toc_hdr}']
-    
+
     cmd = ['pandoc'] + pd_opt + title_bg + toc_title + ['-o'] + [trg]  + src
 
     rc = pexec(cmd)
