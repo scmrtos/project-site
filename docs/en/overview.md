@@ -293,7 +293,7 @@ Each process, as mentioned earlier, has an executable function. When using the s
 
 Configuration information is specified in a dedicated header file `scmRTOS_config.h`. The list of configuration macros and their meanings[^overview-14] are provided below.
 
-[^overview-14]: The table shows example values. In each project, values are set individually based on project requirements.
+[^overview-14]: The list shows example values. In each project, values are set individually based on project requirements.
 
   * `scmRTOS_PROCESS_COUNT`
     * **value** :  n
