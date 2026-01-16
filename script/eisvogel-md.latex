@@ -998,8 +998,8 @@ $endif$
 }
 
 %\usepackage{amsmath}
-%\allowdisplaybreaks[1]        % Inline math не ломается
-%\everymath\expandafter{\the\everymath \textstyle}  % Компактный math
+%\allowdisplaybreaks[1]                             % inline math not break
+%\everymath\expandafter{\the\everymath \textstyle}  % compact math
 
 %\usepackage[cache=false, outputdir=/opt/pro/scmrtos/doc/en]{minted}
 \usepackage[outputdir=build]{minted}
@@ -1011,25 +1011,25 @@ $endif$
 \definecolor{navy}{HTML}{001F3F} % Цвет Navy
 
 \setminted{
-    fontsize=\footnotesize,  % или \small, но без увеличения интервала
-    bgcolor=codebg,       % Применяем цвет фона
-    baselinestretch=1.0,  % Жёстко задаёт множитель межстрочного интервала
-    autogobble=true,      % убирает общие ведущие пробелы
-    breaklines=true,     % отключите, если не нужны переносы
-    frame=single,         % опционально: добавьте рамку как в listings
+    fontsize=\footnotesize,  
+    bgcolor=codebg,       
+    baselinestretch=1.0,  
+    autogobble=true,      % remove leading spaces
+    breaklines=true,      
+    frame=single,         
     framesep=2mm
 }
 
 \setmintedinline{
-    bgcolor={lightgray!30},          % Прозрачный фон (или lightgray!20 для лёгкого выделения)
-    style=default,       % или другой СВЕТЛЫЙ стиль для текста
+    bgcolor={lightgray!30},  
+    style=default,          % prefer light theme
     fontsize=\normalsize
 }
 %\renewcommand{\texttt}[1]{\color{inlineCodeColor}\sethlcolor{lightgray!20}{\ttfamily\hl{#1}}}
 
-% Отдельные настройки для C++ (опционально)
+% additions C++ settins (optional)
 \setminted[cpp]{
-    linenos=false % убирает номера строк, если они появились
+    linenos=false % remome line numbers
 }
 
 \begin{document}
