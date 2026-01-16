@@ -1,7 +1,6 @@
 # Processes
-----
 
-## General Information and<br> Internal Representation
+## Implementation
 
 ### The Process Concept
 
@@ -9,15 +8,15 @@ In **scmRTOS**, a process is an object of a type derived from the class `OS::TBa
 
 To define process types, the standard C++ feature—templates—is used. This approach yields compact process types that contain all necessary internal data, including the process stack itself, which varies in size across processes and is specified individually.
 
-### TBaseProcess
+### TBaseProcess Class
 
-The core functionality of a process is defined in the base class `OS::TBaseProcess`, from which actual processes are derived using the `OS::process<>` template, as mentioned earlier. This approach is chosen to avoid duplicating identical code across template instantiations[^1].
+The core functionality of a process is defined in the base class `OS::TBaseProcess`, from which actual processes are derived using the `OS::process<>` template, as mentioned earlier. This approach is chosen to avoid duplicating identical code across template instantiations[^processes-1].
 
-[^1]: In programming slang, these are often called instances.
+[^processes-1]: In programming slang, these are often called instances.
 
-Therefore, the template itself declares only those elements that differ between processes&nbsp;– the stacks and the process executable function (`exec()`). The source code for the class `OS::TBaseProcess` is presented[^2], see "Listing 1. TBaseProcess".
+Therefore, the template itself declares only those elements that differ between processes&nbsp;– the stacks and the process executable function (`exec()`). The source code for the class `OS::TBaseProcess` is presented[^processes-2], see "Listing 1. TBaseProcess".
 
-[^2]: In reality, there are two variants of this class: the standard one (shown here) and a version with a separate return-address stack. The latter is omitted for brevity, as it introduces no fundamental differences relevant to understanding the concepts.
+[^processes-2]: In reality, there are two variants of this class: the standard one (shown here) and a version with a separate return-address stack. The latter is omitted for brevity, as it introduces no fundamental differences relevant to understanding the concepts.
 
 ```cpp
 01    class TBaseProcess                                                             
@@ -117,14 +116,13 @@ Therefore, the template itself declares only those elements that differ between 
 95    #endif                                                                         
 96    };                                                                             
 ```
-
 /// Caption  
 Listing 1. TBaseProcess  
 ///
 
-Despite the seemingly extensive class definition, `TBaseProcess` is actually quite small and simple. Its data representation consists of just three core members: the stack pointer (line 79), the timeout tick counter (line 80), and the priority value (line 81). The remaining data members are auxiliary and appear only when additional features are enabled&nbsp;– such as the ability to interrupt and restart a process at any point, or debugging support[^3].
+Despite the seemingly extensive class definition, `TBaseProcess` is actually quite small and simple. Its data representation consists of just three core members: the stack pointer (line 79), the timeout tick counter (line 80), and the priority value (line 81). The remaining data members are auxiliary and appear only when additional features are enabled&nbsp;– such as the ability to interrupt and restart a process at any point, or debugging support[^processes-3].
 
-[^3]: This applies to the rest of the code as well&nbsp;– the majority of the class definition is devoted to these optional capabilities.
+[^processes-3]: This applies to the rest of the code as well&nbsp;– the majority of the class definition is devoted to these optional capabilities.
 
 The class interface provides the following functions:
 
@@ -135,6 +133,7 @@ The class interface provides the following functions:
 * `is_suspended()`. Checks whether the process is in a suspended (inactive) state.
 
 <a name="process-stack"></a>
+
 ### Stack
 
 A process stack is a contiguous region of RAM used to store process data, save the process context, and hold return addresses from functions and interrupts.
@@ -149,13 +148,11 @@ To enable this startup method, the process stack must be prepared accordingly: s
 
 Each process has a dedicated `Timeout` variable to control its behavior during event waits with timeouts or during sleep. Essentially, this variable acts as a down-counter of system timer ticks. When its value is non-zero, it is decremented in the system timer interrupt handler and tested against zero. Upon reaching zero, the owning process is marked ready-to-run.
 
-Thus, if a process is put to sleep with a timeout (i.e., removed from the ready map via `sleep(timeout)` with a non-zero argument), it will be automatically awakened[^4] in the system timer interrupt handler after an interval corresponding to the specified number of system ticks[^5].
+Thus, if a process is put to sleep with a timeout (i.e., removed from the ready map via `sleep(timeout)` with a non-zero argument), it will be automatically awakened[^processes-4] in the system timer interrupt handler after an interval corresponding to the specified number of system ticks[^processes-5].
 
-[^4]: I.e., marked ready-to-run.
+[^processes-4]: I.e., marked ready-to-run.
 
-[^5]: More precisely, the interval is accurate to within a fraction of one tick period, depending on the timing of the `sleep` call relative to the next timer interrupt.
-
-
+[^processes-5]: More precisely, the interval is accurate to within a fraction of one tick period, depending on the timing of the `sleep` call relative to the next timer interrupt.
 
 The same mechanism applies when a service function is called that involves waiting for an event with a timeout. The process will be awakened either when the expected event occurs or when the timeout expires. The value returned by the service function unambiguously indicates the reason for awakening, allowing the user program to easily decide on subsequent actions.
 
@@ -166,11 +163,11 @@ Each process also has a data field holding its priority. This field serves as th
 Priorities are unique&nbsp;– no two processes may share the same priority. The internal representation is an integer variable. For type safety when assigning priorities, a dedicated enumerated type `TPriority` is used.
 
 <a name="process-sleep"></a>
+
 ### The sleep() Function
 
 This function is used to transition the current process from an active state to an inactive one. If the function is called with an argument of 0 (or without specifying an argument&nbsp;– the function has a default argument of 0), the process will enter sleep indefinitely until it is explicitly awakened, for example, by another process using `TBaseProcess::force_wake_up()`. If called with a non-zero argument, the process will sleep for the specified number of system timer ticks, after which it will be automatically awakened (i.e., marked ready-to-run). In this case, the sleep can also be interrupted prematurely by another process or an interrupt handler using `TBaseProcess::wake_up()` or `TBaseProcess::force_wake_up()`.
 
-----
 ## Creating and Using a Process
 
 ### Defining a Process Type
@@ -196,7 +193,6 @@ A concrete process type is described using the `OS::process` template, see "List
 14        stack_item_t Stack[stk_size/sizeof(stack_item_t)];                           
 15    };                                                                               
 ```
-
 /// Caption  
 Listing 2. Process Template  
 ///
@@ -225,6 +221,7 @@ Using a process primarily involves writing user code inside the process function
 * The function `TBaseProcess::wake_up()` should be used cautiously and thoughtfully, while `TBaseProcess::force_wake_up()` requires particular care, as careless use can cause premature awakening of a sleeping (delayed) process, potentially leading to collisions in interprocess interaction.
 
 <a name="process-alternate-exec"></a>
+
 #### Alternative Ways to Declare a Process Object
 
 ##### External Function
@@ -318,7 +315,7 @@ The dispatcher process performs all necessary preparatory work and then signals 
 
 There may also be other situations requiring delayed process activation. To support this functionality, a process can be configured to start in a so-called **suspended** state. Such a process is identical to any other except that its tag is absent from the ready-to-run process map (`ReadyProcessMap`).
 
-Declaration of such a process looks like this[^6]:
+Declaration of such a process looks like this[^processes-6]:
 
 ```cpp
 typedef OS::process<OS::pr1, 300, OS::pssSuspended> Proc2;
@@ -332,10 +329,10 @@ Later, to start this process, the initiating code must call the `force_wake_up()
 Proc2.force_wake_up();
 ```
 
-[^6]: The `ss` prefix in this example stands for **Start State**.
+[^processes-6]: The `ss` prefix in this example stands for **Start State**.
 
----
 <a name="process-restart"></a>
+
 ## Process Restart
 
 Situations may arise where it is necessary to externally interrupt a process and restart it from the beginning. For example, a process performs lengthy computations, but at some point the results become obsolete, and a new computation cycle with fresh data must be started. This can be achieved by terminating the current execution with the ability to restart the process from scratch.
@@ -352,6 +349,7 @@ The `terminate()` function is intended to be called from outside the process bei
 The `terminate()` function can accept a pointer to a function as an argument; this function will serve as the executable entry point for the process on the next start. This provides considerable flexibility in program implementation&nbsp;– on each restart, the exact executable function required in the current program context can be specified.
 
 !!! tip "**TIP**"
+
     The ability to specify the executable function on restart can be effectively used to simulate process deletion and creation&nbsp;– some libraries are designed to require dynamic resource allocation for their operation, in particular the creation of processes to perform tasks followed by their deletion.
     
     **scmRTOS** does not support dynamic process creation and deletion for reasons [described earlier](overview.md#avoid-dynamic-process), but creation/deletion can be simulated, for example by organizing a pool of processes from which an available process can be taken when needed and assigned an appropriate executable function.

@@ -6,6 +6,6 @@
 
 Source code can be cloned or downloaded from [github.com](https://github.com/scmrtos/scmrtos). There are a [number of sample projects](https://github.com/scmrtos/scmrtos-sample-projects) that demonstrates RTOS usage.
 
-Full distribution including RTOS sources, sample projects, documentation[^1], etc available on [releases page](https://github.com/scmrtos/scmrtos/releases/).
+Full distribution including RTOS sources, sample projects, documentation[^index-1], etc available on [releases page](https://github.com/scmrtos/scmrtos/releases/).
 
-[^1]: Distribution includes PDF documents. It's recommended to use [online documentation](preface.md), as it is updated more frequently and contains all the latest changes.
+[^index-1]: Distribution includes PDF documents. It's recommended to use [online documentation](preface.md), as it is updated more frequently and contains all the latest changes.

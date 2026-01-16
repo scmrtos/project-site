@@ -13,5 +13,5 @@
 | Blackfin | Yes | –        | Yes         | Yes        |
 | STM8     | No  | Yes      | –           | –          |
 
-----
+<br>
 '–' means toolchain does not support CPU/MCU

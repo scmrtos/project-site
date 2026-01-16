@@ -91,7 +91,7 @@ Listing 1. Example of Printing Debug Information
 
 The above code produces output similar to:
 
-```
+```cpp
 ------------------------------
 #0 | CPU 82.52 | Slack 164 | Idle
 #1 | CPU  0.00 | Slack 178 | Background

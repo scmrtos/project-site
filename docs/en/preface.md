@@ -4,7 +4,7 @@ The acronym **scmRTOS** stands for **Single-Chip Microcontroller Real-Time Opera
 
 As indicated by the name, **scmRTOS** is targeted at single-chip microcontrollers (MCUs), although it can also be used with processors such as Blackfin or Cortex-A.
 
-### Purpose
+## Purpose
 
 One of the primary objectives in developing this RTOS was to provide the simplest, most minimal, fastest, and most resource-efficient implementation of preemptive multitasking for single-chip MCUs with limited resources that generally cannot be expanded. Although advancements in technology since the introduction of **scmRTOS** have reduced the emphasis on RTOS efficiency, simplicity, speed, and compact size continue to be advantageous in many applications.
 
@@ -18,6 +18,6 @@ In embedded systems development, C++ is sometimes viewed unfavorably due to misc
 
     The history of **scmRTOS** and certain "philosophical" considerations regarding real-time operating systems are detailed in the [PDF document](https://github.com/scmrtos/scmrtos-doc/blob/master/pdf/scmRTOS.en.pdf).
 
-### Supported Platforms
+## Supported Platforms
 
 **scmRTOS** currently supports a number of target platforms, see [Supported Platforms Table](../platforms.md) for details.

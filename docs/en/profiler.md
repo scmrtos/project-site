@@ -1,4 +1,4 @@
-# Developing an Extension:<br>Process Profiler
+# Process Profiler
 
 ## Purpose
 
@@ -100,13 +100,13 @@ Listing 2. Processing Profiling Results
 
 The presented code, in particular, demonstrates how the result processing is selected depending on the template parameter type (line 24).
 
-To avoid blocking interrupts for a significant time when accessing the counters array[^1], the array is copied into a temporary buffer, which is then used for further data processing.
+To avoid blocking interrupts for a significant time when accessing the counters array[^profiler-1], the array is copied into a temporary buffer, which is then used for further data processing.
 
-[^1]: This access must be atomic to prevent corruption of the algorithm due to asynchronous modification of counter values by calls to `advance_counters()`.
+[^profiler-1]: This access must be atomic to prevent corruption of the algorithm due to asynchronous modification of counter values by calls to `advance_counters()`.
 
-When an integer type is chosen as the template parameter, the profiling result resolution is one hundredth of a percent, and the final results are stored in hundredths of a percent. This is achieved by normalizing each counter value—pre-multiplied by a coefficient defining the result resolution[^2]—to the sum of all counter values.
+When an integer type is chosen as the template parameter, the profiling result resolution is one hundredth of a percent, and the final results are stored in hundredths of a percent. This is achieved by normalizing each counter value—pre-multiplied by a coefficient defining the result resolution[^profiler-2]—to the sum of all counter values.
 
-[^2]: In this case, the coefficient is 10000, which sets the resolution to 1/10000, corresponding to 0.01%.
+[^profiler-2]: In this case, the coefficient is 10000, which sets the resolution to 1/10000, corresponding to 0.01%.
 
 This naturally imposes a limit on the maximum counter value used in calculations. For example, if the profiler counter variables are 32-bit unsigned integers (range \(0..2^{32}-1 = 0..4294967295\)) and multiplication by the coefficient 10000 is performed, the counter value must not exceed:
 
@@ -130,11 +130,11 @@ For the statistical method, the call to `advance_counters()` should be placed in
 
 When choosing the measurement-based profiling method, `advance_counters()` must be called during context switches, which can be achieved by placing its call in the user hook for the context-switch interrupt.
 
-Implementing `time_interval()` in this case is slightly more complex: the function must return a value proportional to the time interval between the previous and current calls. Measuring this interval requires utilizing some hardware resource of the target processor; in most cases, any hardware timer[^3] that allows reading its count register[^4] is suitable.
+Implementing `time_interval()` in this case is slightly more complex: the function must return a value proportional to the time interval between the previous and current calls. Measuring this interval requires utilizing some hardware resource of the target processor; in most cases, any hardware timer[^profiler-3] that allows reading its count register[^profiler-4] is suitable.
 
-[^3]: Some processors (e.g. Blackfin) include a dedicated CPU cycle counter that increments on every clock cycle, making time interval measurement very straightforward.
+[^profiler-3]: Some processors (e.g. Blackfin) include a dedicated CPU cycle counter that increments on every clock cycle, making time interval measurement very straightforward.
 
-[^4]: For example, the WatchDog Timer in **MSP430** MCUs, while suitable as a system timer, is not appropriate for time interval measurement because the program cannot access its counter register.
+[^profiler-4]: For example, the WatchDog Timer in **MSP430** MCUs, while suitable as a system timer, is not appropriate for time interval measurement because the program cannot access its counter register.
 
 The scale of the value returned by `time_interval()` must be coordinated with the profiling period so that the sum of all values returned by this function for any process during the profiling period does not exceed \(2^{32}-1\), see "Listing 3. Time Interval Measurement Function".
 
