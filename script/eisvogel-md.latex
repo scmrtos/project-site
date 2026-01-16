@@ -1001,9 +1001,7 @@ $endif$
 %\allowdisplaybreaks[1]                             % inline math not break
 %\everymath\expandafter{\the\everymath \textstyle}  % compact math
 
-%\usepackage[cache=false, outputdir=/opt/pro/scmrtos/doc/en]{minted}
 \usepackage[outputdir=build]{minted}
-%\usepackage{minted}
 
 \usemintedstyle{monokai}  % default, vs, tango, monokai, etc
 
@@ -1025,7 +1023,6 @@ $endif$
     style=default,          % prefer light theme
     fontsize=\normalsize
 }
-%\renewcommand{\texttt}[1]{\color{inlineCodeColor}\sethlcolor{lightgray!20}{\ttfamily\hl{#1}}}
 
 % additions C++ settins (optional)
 \setminted[cpp]{
