@@ -30,7 +30,7 @@ nav:
     - RTOS Components:
         - Kernel                         : kernel.md
         - Processes                      : processes.md
-        - Interprocess Communications    : ipcs.md
+        - Interprocess Communication     : ipcs.md
         - Ports                          : ports.md
 
     - Appendix:
