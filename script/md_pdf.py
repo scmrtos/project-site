@@ -50,7 +50,6 @@ pd_opt = [
     '-V', 'titlepage',
     #'-V', 'titlepage-logo=docs/scmrtos.png',  
     '-V', 'titlepage-rule-color=647687',
-    '-V', 'titlepage-background=docs/img/title-bg.png',
     '-V', 'titlepage-text-color=eaecef',
 
     #'-V', 'title=scmRTOS User Manual',
@@ -97,7 +96,19 @@ def tex2pdf(tex):
 
 #------------------------------------------------------------------------------
 def md2pdf(src, trg):
-    cmd = ['pandoc'] + pd_opt + ['-o'] + [trg]  + src
+    if 'en' in trg:
+        lang    = 'en'
+        toc_hdr = 'Content'
+        print_info('build English User Manual')
+    else:
+        lang = 'ru'
+        toc_hdr = 'Содержание'
+        print_info('build Russian User Manual')
+
+    title_bg  = ['-V', f'titlepage-background=docs/img/title-bg-{lang}.png'] 
+    toc_title = ['-V', f'toc-title={toc_hdr}']
+    
+    cmd = ['pandoc'] + pd_opt + title_bg + toc_title + ['-o'] + [trg]  + src
 
     rc = pexec(cmd)
 
