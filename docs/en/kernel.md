@@ -1,4 +1,4 @@
-# Kernel
+# Kernel <span id="kernel-kernel"></span>
 
 ## Brief Information
 
@@ -12,7 +12,7 @@ The OS kernel performs:
 
 The core of the system is the `TKernel` class, which includes all the necessary functions and data. For obvious reasons, there is only one instance of this class. Almost its entire implementation is private, and to allow access from certain OS parts that require kernel resources, the C++ "friend" mechanism is used&nbsp;– functions and classes granted such access are declared with the `friend` keyword.
 
-It should be noted that in this context, the kernel refers not only to the `TKernel` object but also to the extension mechanism implemented as the `TKernelAgent` class. This class was specifically introduced to provide a base for building extensions. Looking ahead, all interprocess communication services in **scmRTOS** are implemented as such extensions. The `TKernelAgent` class is declared as a "friend" of `TKernel` and contains the minimal necessary set of protected functions to grant descendants access to kernel resources. Extensions are built by inheriting from `TKernelAgent`. For more details, see [TKernelAgent and Extensions](kernel.md#kernel-agent).
+It should be noted that in this context, the kernel refers not only to the `TKernel` object but also to the extension mechanism implemented as the `TKernelAgent` class. This class was specifically introduced to provide a base for building extensions. Looking ahead, all interprocess communication services in **scmRTOS** are implemented as such extensions. The `TKernelAgent` class is declared as a "friend" of `TKernel` and contains the minimal necessary set of protected functions to grant descendants access to kernel resources. Extensions are built by inheriting from `TKernelAgent`. For more details, see [Kernel Agent and Extensions](kernel.md#kernel-kernel-agent).
 
 ## TKernel Class
 
@@ -251,7 +251,7 @@ However, the direct control transfer variant has a significant drawback: when th
 
 #### Software Interrupt-Based Control Transfer  
 
-This variant avoids the aforementioned drawback. Since the ISR itself executes normally without rescheduling from within it, saving the "local context" is also not performed, significantly reducing overhead and improving system performance. To avoid spoiling the picture by calling a non-inlined member function of an interprocess communication service object, it is recommended to use special lightweight, inline versions of such functions&nbsp;– for more details, see [the Interprocess Communication section](ipcs.md).
+This variant avoids the aforementioned drawback. Since the ISR itself executes normally without rescheduling from within it, saving the "local context" is also not performed, significantly reducing overhead and improving system performance. To avoid spoiling the picture by calling a non-inlined member function of an interprocess communication service object, it is recommended to use special lightweight, inline versions of such functions&nbsp;– for more details, see [the Interprocess Communication section](ipcs.md#ipcs-ipcs).
 
 The main disadvantage of software interrupt-based control transfer is that not all hardware platforms support software interrupts. In such cases, one of the unused hardware interrupts can be used as a software interrupt. Unfortunately, this introduces some lack of universality&nbsp;– it is not known in advance whether a particular hardware interrupt will be needed in a given project. Therefore, if the processor does not specifically provide a suitable interrupt, the choice of context switch interrupt is delegated (from the port level) to the project level, and the user must write the corresponding code[^kernel-12] themselves.
 
@@ -269,7 +269,7 @@ Using direct control transfer is justified when it is truly impossible to use a 
 
 ### Support for Interprocess Communication  
 
-Support for interprocess communication boils down to providing a set of functions for monitoring process states, as well as granting access to rescheduling mechanisms for the OS components&nbsp;– interprocess communication services. For more details on this, see [the Interprocess Communication section](ipcs.md).
+Support for interprocess communication boils down to providing a set of functions for monitoring process states, as well as granting access to rescheduling mechanisms for the OS components&nbsp;– interprocess communication services. For more details on this, see [the Interprocess Communication section](ipcs.md#ipcs-ipcs).
 
 ### Interrupts
 
@@ -283,7 +283,7 @@ To simplify usage and improve portability, the code executed at the entry and ex
 
 [^kernel-14]: The aforementioned functions `isr_enter()` and `isr_exit()` are member functions of this wrapper class.
 
-It should be noted that if a non-inlinable function is called within an interrupt handler, the compiler will save the "local context"&nbsp;– the scratch[^kernel-15] registers[^kernel-16]. Therefore, it is advisable to avoid calls to non-inlinable functions from interrupt handlers, as even partial context saving degrades both execution speed and code size[^kernel-17]. For this reason, in the current version of **scmRTOS**, some interprocess communication objects have been augmented with special lightweight functions designed for use in interrupt handlers. These functions are inlinable and employ a lightweight version of the scheduler, which is also inlinable. For more details, see [the Interprocess Communication Services section](ipcs.md).
+It should be noted that if a non-inlinable function is called within an interrupt handler, the compiler will save the "local context"&nbsp;– the scratch[^kernel-15] registers[^kernel-16]. Therefore, it is advisable to avoid calls to non-inlinable functions from interrupt handlers, as even partial context saving degrades both execution speed and code size[^kernel-17]. For this reason, in the current version of **scmRTOS**, some interprocess communication objects have been augmented with special lightweight functions designed for use in interrupt handlers. These functions are inlinable and employ a lightweight version of the scheduler, which is also inlinable. For more details, see [the Interprocess Communication section](ipcs.md#ipcs-ipcs).
 
 [^kernel-15]: Typically, the compiler divides processor registers into two groups: scratch and preserved. Scratch registers are those that any function may use without prior saving. Preserved registers are those whose values must be saved if the function needs to use them (the function must save the value before use and restore it afterward). In some cases, preserved registers are referred to as local; in the context discussed here, these terms are synonymous.
 
@@ -402,16 +402,15 @@ Since this function is called inside the timer interrupt handler, upon returning
 
     [^kernel-29]: Due to the small number of processes and the simple, fast scheduler.
 
+<span id="kernel-kernel-agent"></span>
 
-<a name="kernel-agent"></a>
+## Kernel Agent and Extensions 
 
-## TKernelAgent and Extensions
-
-### Kernel Agent
+### TKernelAgent Class
 
 The `TKernelAgent` class is a specialized mechanism designed to provide controlled access to kernel resources when developing extensions to the operating system's functionality.
 
-The overall concept is as follows: creating any functional extension for the OS requires access to certain kernel resources&nbsp;– such as the variable holding the priority of the active process or the system process map. Granting direct access to these internal structures would be unwise, as it violates the security model of object-oriented design[^kernel-30]. This could lead to negative consequences, such as program instability due to insufficient coding discipline or loss of compatibility if the internal kernel representation changes.
+The overall concept is as follows: creating any functional extension for the OS requires access to certain kernel resources&nbsp;– such as the variable holding the priority of the active process or the system process map. Granting direct access to these internal structures would be unwise, as it violates the security model of object approach[^kernel-30]. This could lead to negative consequences, such as program instability due to insufficient coding discipline or loss of compatibility if the internal kernel representation changes.
 
 To address this, an approach based on a dedicated class—the kernel agent—is proposed. It restricts access through a documented interface, allowing extensions to be created in a formalized, simpler, and safer manner.
 

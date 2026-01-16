@@ -1,4 +1,4 @@
-# Processes
+# Processes <span id="processes-processes"></span>
 
 ## Implementation
 
@@ -132,7 +132,7 @@ The class interface provides the following functions:
 * `is_sleeping()`. Checks whether the process is sleeping (i.e., waiting for an event with a timeout).
 * `is_suspended()`. Checks whether the process is in a suspended (inactive) state.
 
-<a name="process-stack"></a>
+<span id="processes-process-stack"></span>
 
 ### Stack
 
@@ -162,7 +162,7 @@ Each process also has a data field holding its priority. This field serves as th
 
 Priorities are unique&nbsp;– no two processes may share the same priority. The internal representation is an integer variable. For type safety when assigning priorities, a dedicated enumerated type `TPriority` is used.
 
-<a name="process-sleep"></a>
+<span id="processes-process-sleep"></span>
 
 ### The sleep() Function
 
@@ -213,14 +213,14 @@ Slon slon;
 
 where `N` is the priority number.
 
-["Listing 1. Process Executable Function in Overview section"](overview.md#process-exec) illustrates a typical example of a process function.
+["Listing 1. Process Executable Function in Overview section"](overview.md#overview-process-exec) illustrates a typical example of a process function.
 
 Using a process primarily involves writing user code inside the process function. As previously mentioned, a few simple rules must be followed:
 
 * Care must be taken to ensure that program flow never exits the process function. Otherwise, since this function was not called in the conventional way, upon exit the flow of control would jump to undefined addresses, leading to undefined program behavior (though in practice, the behavior is usually quite defined&nbsp;– the program simply stops working!).
 * The function `TBaseProcess::wake_up()` should be used cautiously and thoughtfully, while `TBaseProcess::force_wake_up()` requires particular care, as careless use can cause premature awakening of a sleeping (delayed) process, potentially leading to collisions in interprocess interaction.
 
-<a name="process-alternate-exec"></a>
+<span id="processes-alternate-process-exec"></span>
 
 #### Alternative Ways to Declare a Process Object
 
@@ -331,7 +331,7 @@ Proc2.force_wake_up();
 
 [^processes-6]: The `ss` prefix in this example stands for **Start State**.
 
-<a name="process-restart"></a>
+<span id="processes-process-restart"></span>
 
 ## Process Restart
 
@@ -352,7 +352,7 @@ The `terminate()` function can accept a pointer to a function as an argument; th
 
     The ability to specify the executable function on restart can be effectively used to simulate process deletion and creation&nbsp;– some libraries are designed to require dynamic resource allocation for their operation, in particular the creation of processes to perform tasks followed by their deletion.
     
-    **scmRTOS** does not support dynamic process creation and deletion for reasons [described earlier](overview.md#avoid-dynamic-process), but creation/deletion can be simulated, for example by organizing a pool of processes from which an available process can be taken when needed and assigned an appropriate executable function.
+    **scmRTOS** does not support dynamic process creation and deletion for reasons [described earlier](overview.md#overview-avoid-dynamic-process), but creation/deletion can be simulated, for example by organizing a pool of processes from which an available process can be taken when needed and assigned an appropriate executable function.
     
     Changing process priorities or stack sizes is not possible—these parameters are set statically during OS configuration—but in many cases this is not required, since the resources needed to perform tasks are usually known at build time.
 

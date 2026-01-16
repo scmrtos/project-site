@@ -1,7 +1,6 @@
-# Target Platforms
+# Target Platforms <span id="platforms-supported-targets"></span>
 
-#### Supported Platforms Table
-
+The following target platforms are supported for now.
 
 | CPU/MCU  | GCC | EW (IAR) | VDSP++ (ADI)| CCES (ADI) |
 |----------|:---:|:--------:|:-----------:|:----------:|
@@ -12,6 +11,7 @@
 | Cortex-A | Yes | No       | –           | –          |
 | Blackfin | Yes | –        | Yes         | Yes        |
 | STM8     | No  | Yes      | –           | –          |
+
 
 <br>
 '–' means toolchain does not support CPU/MCU

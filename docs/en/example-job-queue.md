@@ -1,4 +1,4 @@
-# Job Queue
+# Job Queue <span id="example-job-queue"></span>
 
 ## Introduction
 
@@ -188,9 +188,9 @@ Overall, the mechanism described is quite simple, has low overhead, and allows f
 
     [^example-job-queue-7]: Relative to the processes placing jobs in the queue.
 
-#### Mutual-Exclusion Semaphores (Mutexes) and the Problem of Blocking High-Priority Processes
+### Mutexes and the Problem of Blocking High-Priority Processes
 
-When discussing features of shared resource access from different processes via mutual-exclusion semaphores, a situation was described that is addressed by the [priority inheritance method](ipcs.md#mutex-priority-inversion).
+When discussing features of shared resource access from different processes via mutual-exclusion semaphores, a situation was described that is addressed by the [priority inheritance method](ipcs.md#ipcs-mutex-priority-inversion).
 
 The essence was that, under certain circumstances, a low-priority process can indirectly block a high-priority process. To solve this problem, the technique known as "priority inheritance" is often used: when a high-priority process attempts to acquire a mutex already held by a low-priority process, instead of simply waiting normally, the priorities are temporarily swapped until the mutex is released.
 

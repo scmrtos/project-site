@@ -20,4 +20,4 @@ In embedded systems development, C++ is sometimes viewed unfavorably due to misc
 
 ## Supported Platforms
 
-**scmRTOS** currently supports a number of target platforms, see [Supported Platforms Table](../platforms.md) for details.
+**scmRTOS** currently supports a number of target platforms, see [Supported Platforms Table](platforms.md#platforms-supported-targets) for details.

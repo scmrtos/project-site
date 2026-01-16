@@ -50,7 +50,7 @@ The set of macros, types, other definitions, and declarations that specify the q
 
 <br>**OS Extensions**
 
-Software objects that extend the functionality of the operating system but are not part of the core OS. An example of an extension is [the process activity profiler](profiler.md).
+Software objects that extend the functionality of the operating system but are not part of the core OS. An example of an extension is [the process activity profiler](profiler.md#profiler-profiler).
 
 <br>**OS Port**
 

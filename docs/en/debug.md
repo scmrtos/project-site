@@ -47,7 +47,7 @@ This method eliminates the primary drawback of statistical profiling&nbsp;– lo
 
 ### Usage
 
-To use the profiler in a user project, a time measurement function must be defined and the profiler included in the project. For details, see [the example in the Appendix on Process Profiling](profiler.md).
+To use the profiler in a user project, a time measurement function must be defined and the profiler included in the project. For details, see [Process Profiling example](profiler.md#profiler-profiler).
 
 ## Process Names
 

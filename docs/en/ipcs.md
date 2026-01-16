@@ -1,4 +1,4 @@
-# Interprocess Communication
+# Interprocess Communication <span id="ipcs-ipcs"></span> 
 
 ## Introduction
 
@@ -6,7 +6,7 @@ Starting with version 4, **scmRTOS** employs a fundamentally different mechanism
 
 [^ipcs-1]: Since interprocess communication services perform similar operations when interacting with kernel resources, they contained nearly identical code in several places.
 
-The implementation is based on the concept of extending OS functionality through extension classes derived from `TKernelAgent` (see ["TKernelAgent and Extensions"](kernel.md#kernel-agent)).
+The implementation is based on the concept of extending OS functionality through extension classes derived from `TKernelAgent` (see ["Kernel Agent and Extensions"](kernel.md#kernel-kernel-agent)).
 
 The key class for building interprocess communication services is `TService`, which implements the common functionality shared by all service classes. All service classes—both those included in the standard **scmRTOS** distribution and those developed[^ipcs-2] as extensions to the standard set—are derived from `TService`.
 
@@ -507,7 +507,7 @@ Listing 8. Wrapper Class OS::TMutexLocker
 
 The usage methodology is identical to other wrappers such as `TCritSect` and `TISRW`.
 
-<a name="mutex-priority-inversion"></a>
+<span id="ipcs-mutex-priority-inversion"></span>
 
 !!! tip "**ON PRIORITY INVERSION**"
 
@@ -526,7 +526,7 @@ The usage methodology is identical to other wrappers such as `TCritSect` and `TI
 
 Despite its elegance, priority inheritance has drawbacks: implementation overhead can be comparable to or exceed that of the mutex itself, and the required modifications across the OS (all priority-related components) may unacceptably degrade performance.
 
-For these reasons, the current version of **scmRTOS** does not implement priority inheritance. Instead, the problem is addressed via task delegation, described in detail in Appendix ([Example: Job Queue](example-job-queue.md)), which provides a unified method for redistributing context-related code execution across processes of different priorities.
+For these reasons, the current version of **scmRTOS** does not implement priority inheritance. Instead, the problem is addressed via task delegation, described in detail in Appendix ([Example: Job Queue](example-job-queue.md#example-job-queue)), which provides a unified method for redistributing context-related code execution across processes of different priorities.
 
 ----
 

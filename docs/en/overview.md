@@ -1,10 +1,10 @@
-# Operating System Overview
+# Operating System Overview <span id="overview-overview"></span>
 
 ## General
 
 **scmRTOS** is a real-time operating system featuring priority-based preemptive multitasking. The OS supports up to 32 processes (including the system **IdleProc** process, i.e., up to 31 user processes), each with a unique priority. All processes are static, meaning their number is defined at the project build stage and they cannot be added or removed at runtime.
 
-<a name="avoid-dynamic-process"></a>
+<span id="overview-avoid-dynamic-process"></span>
 
 The decision to forgo dynamic process creation is driven by resource conservation considerations, as resources in single-chip microcontrollers are limited. Dynamic process deletion is also not implemented, as it offers little benefit: the program memory used by the process is not freed, and RAM for subsequent use would require allocation/deallocation via a memory manager, which is a complex component that consumes significant resources and is generally not used in single-chip microcontroller projects[^overview-1].
 
@@ -28,7 +28,7 @@ The kernel handles:
 * System time support (system timer).
 * Extension support.
 
-For more details on the kernel's structure, composition, functions, and mechanisms, see the ["Kernel" section](kernel.md).
+For more details on the kernel's structure, composition, functions, and mechanisms, see the [Kernel section](kernel.md#kernel-kernel).
 
 ### Processes
 
@@ -36,7 +36,7 @@ Processes provide the ability to create a separate (asynchronous with respect to
 
 The executable function must contain an infinite loop that serves as the main loop of the process, see "Listing 1. Process executable function" for an example.
 
-<a name="process-exec"></a>
+<span id="overview-process-exec"></span>
 
 ```cpp
 1    template<> void slon_proc::exec()
@@ -54,13 +54,13 @@ The executable function must contain an infinite loop that serves as the main lo
 Listing 1. Process Execution Function
 ///
 
-Upon system startup, control is transferred to the process function, where declarations of used data (line 3) and initialization code (line 4) can be placed at the beginning, followed by the process's main loop (lines 5–8). User code must be written to prevent exiting the process function. For example, once entering the main loop, do not leave it (the primary approach), or if exiting the main loop, enter another loop (even an empty one) or an infinite "sleep" by calling the `sleep()` function[^overview-2] without parameters (or with parameter "0"), see [The sleep() Function](processes.md#process-sleep) for details. The process code must not contain `return` statements.
+Upon system startup, control is transferred to the process function, where declarations of used data (line 3) and initialization code (line 4) can be placed at the beginning, followed by the process's main loop (lines 5–8). User code must be written to prevent exiting the process function. For example, once entering the main loop, do not leave it (the primary approach), or if exiting the main loop, enter another loop (even an empty one) or an infinite "sleep" by calling the `sleep()` function[^overview-2] without parameters (or with parameter "0"), see [The sleep() Function](processes.md#processes-process-sleep) for details. The process code must not contain `return` statements.
 
-[^overview-2]: In this case, no other process should "wake" this sleeping process before exit, as it would lead to undefined behavior and likely cause the system to crash. The only safe action applicable to a process in this state is to terminate it (with the option to restart from the beginning); see [Process Restart](processes.md#process-restart).
+[^overview-2]: In this case, no other process should "wake" this sleeping process before exit, as it would lead to undefined behavior and likely cause the system to crash. The only safe action applicable to a process in this state is to terminate it (with the option to restart from the beginning); see [Process Restart](processes.md#processes-process-restart).
 
 !!! info "**NOTE**"
 
-    In the example shown, the role of the process executable function is played by the `exec()` function&nbsp;– a static member function of the class that describes the process type. This is not the only way to define a process executable function: in addition to a static member function, any function of the form `void fun()` can be used, whose address must be passed to the process constructor. This includes the ability to inline the function body as a constructor argument using the C++ lambda function mechanism. For more details see ["Alternative Ways to Declare a Process Object"](processes.md#process-alternate-exec)
+    In the example shown, the role of the process executable function is played by the `exec()` function&nbsp;– a static member function of the class that describes the process type. This is not the only way to define a process executable function: in addition to a static member function, any function of the form `void fun()` can be used, whose address must be passed to the process constructor. This includes the ability to inline the function body as a constructor argument using the C++ lambda function mechanism. For more details see ["Alternative Ways to Declare a Process Object"](processes.md#processes-alternate-process-exec)
 
 
 
@@ -120,7 +120,7 @@ The project-dependent part consists of three header files:
 
 * **scmRTOS_config.h**. Configuration macros and type aliases, particularly for timeout object bit widths.
 * **scmRTOS_target_cfg.h**. Code for tailoring OS mechanisms to the project; e.g., specifying the interrupt vector for the system timer handler, system timer control macros, context switch interrupt activation function definition, etc.
-* **scmRTOS_extensions.h**. Extension inclusion control. See [TKernelAgent and Extensions](kernel.md#kernel-agent) for details.
+* **scmRTOS_extensions.h**. Extension inclusion control. See [Kernel Agent and Extensions](kernel.md#kernel-kernel-agent) for details.
 
 ### Internal Structure
 
@@ -132,7 +132,7 @@ Within this namespace, the following classes are declared[^overview-5]:
 * `TBaseProcess`. Implements the base object type for the `process` template, on which all (user or system) processes are built.
 * `process`. Template for creating types of any OS process.
 * `TISRW`. Wrapper class to simplify and automate interrupt handler code creation. Its constructor handles entry actions, and destructor handles exit actions.
-* `TKernelAgent`. Special service class providing access to kernel resources for extending OS capabilities. It forms the basis for `TService` (base for all interprocess communication services) and the [process profiler template class](profiler.md).
+* `TKernelAgent`. Special service class providing access to kernel resources for extending OS capabilities. It forms the basis for `TService` (base for all interprocess communication services) and the [process profiler template class](profiler.md#profiler-profiler).
 
 [^overview-5]: Nearly all OS classes are declared as friends of each other to ensure access among OS components to each other's internals.
 
@@ -146,7 +146,7 @@ The service classes include:
 
 Note that counting semaphores are absent from the list, as no compelling need for them was identified. Resources requiring counting semaphore control—primarily RAM—are in short supply in single-chip microcontrollers. Situations needing quantity tracking are handled using objects based on the `OS::channel` template, which already implement the corresponding mechanism in one form or another.
 
-If such a service is needed, the user can add it to the base set independently by creating their own implementation as an extension; see [TKernelAgent and Extensions](kernel.md#kernel-agent).
+If such a service is needed, the user can add it to the base set independently by creating their own implementation as an extension; see [Kernel Agent and Extensions](kernel.md#kernel-kernel-agent).
 
 **scmRTOS** provides the user with several functions for control:
 
@@ -185,7 +185,7 @@ To facilitate working with source code and improve portability, the following ty
 
 As noted earlier, to achieve maximum efficiency, static mechanisms are used wherever possible&nbsp;– i.e., all functionality is determined at compile time.
 
-This primarily concerns processes. Before using each process, its type must be defined[^overview-10], specifying the process type name, its priority, and the size of the RAM area allocated for the [process stack](processes.md#process-stack). For example:
+This primarily concerns processes. Before using each process, its type must be defined[^overview-10], specifying the process type name, its priority, and the size of the RAM area allocated for the [process stack](processes.md#processes-process-stack). For example:
 
 [^overview-10]: Each process is an object of a separate type (class) derived from the common base class `TBaseProcess`.
 
