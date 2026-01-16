@@ -21,6 +21,7 @@ pd_opt = [
     '--toc-depth=4',
     #'--file-scope',
     '--number-sections',
+    '-V', 'toc-own-page=true',
     '--no-highlight',
     '-V', 'listings=false',
     '-V', 'codeBlockSurroundings=minted',
@@ -45,8 +46,18 @@ pd_opt = [
     '-V', 'header-includes=\\widowpenalty=10000 \\clubpenalty=10000 \\RedeclareSectionCommand[beforeskip=1.8ex plus 0.5ex minus 0.2ex,afterskip=0.8ex plus 0.2ex minus 0.1ex,font=\\large\\bfseries]{paragraph}\\RedeclareSectionCommand[beforeskip=1.4ex plus 0.4ex minus 0.2ex,afterskip=0.6ex plus 0.1ex minus 0.1ex,font=\\normalsize\\bfseries\\itshape]{subparagraph}',
     '-V', 'title=scmRTOS User Manual',
     '-V', 'author=scmRTOS Team',
-    '-V', 'date=\\today'
     '-M', 'secnumdepth=4',
+    '-V', 'classoption=twoside',
+    '-V', 'geometry=inner=3cm,outer=2cm,top=2.5cm,bottom=3cm',
+
+    '-V', 'header-left=\\rightmark',
+    '-V', 'header-center=\\leftmark',
+    '-V', 'header-right=\\thedate',
+
+    '-V', 'footer-left=v5.3',
+    '-V', 'footer-center=scmRTOS User Manual',
+    '-V', 'footer-right=\\thepage',
+    '-V', 'date=\\today',
 ]
 
 #------------------------------------------------------------------------------
