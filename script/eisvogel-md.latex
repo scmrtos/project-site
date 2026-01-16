@@ -1058,6 +1058,14 @@ $endif$
     \renewcommand{\labelitemi}{\tikzbullet}%
     \renewcommand{\labelitemii}{\tikztriangle}%
 }
+
+\usepackage{titling}
+\pretitle{\begin{center}\Huge\bfseries}
+\posttitle{\end{center}\vspace{1.2cm}}
+\preauthor{\begin{center}\Large}
+\postauthor{\end{center}\vspace{0.8cm}}
+\predate{\begin{center}\large\itshape}
+\postdate{\end{center}\vspace{2cm}}
 \begin{document}
 
 $if(titlepage)$
