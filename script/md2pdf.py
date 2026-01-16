@@ -6,40 +6,45 @@ from pathlib import Path
 
 from utils import *
 
-from md_pdf import md2tex, tex2pdf
+#from md_pdf import md2tex, tex2pdf, md2pdf
+from md_pdf import build_pdf
 
-BUILD_DIR       = 'build'
-TARGET_NAME_ENG = 'scmrtos-en'
+#------------------------------------------------------------------------------
+#
+#    Settings
+#
+build_dir    = 'build'
+trg_name_eng = 'scmrtos-en'
 
-tex_eng = f'{Path(BUILD_DIR) / TARGET_NAME_ENG}.tex'
-
-src_list = []
-
-src_list.append('index.md')
-src_list.append('overview.md')
-src_list.append('kernel.md')
-src_list.append('processes.md')
-src_list.append('ipcs.md')
-src_list.append('ports.md')
-src_list.append('debug.md')
-src_list.append('profiler.md')
-src_list.append('example-job-queue.md')
-src_list.append('glossary.md')
+#------------------------------------------------------------------------------
+#
+#    Options
+#
+src_list = [
+    'index.md',
+    'platforms.md',
+    'preface.md',
+    'overview.md',
+    'kernel.md',
+    'processes.md',
+    'ipcs.md',
+    'ports.md',
+    'debug.md',
+    'profiler.md',
+    'example-job-queue.md',
+    'glossary.md'
+]
 
 path_en = 'docs/en'
 path_ru = 'docs/ru'
 
 src_en = [str(Path(path_en) / i) for i in src_list]
 
-print_info(os.getcwd())
+#------------------------------------------------------------------------------
+#
+#    Actions
+#
+Path(build_dir).mkdir(exist_ok=True)
+build_pdf(src_en, trg_name_eng)
 
-Path(BUILD_DIR).mkdir(exist_ok=True)
-
-if md2tex(src_en, tex_eng):
-    if not tex2pdf(tex_eng):
-        sys.exit(-2)
-
-else:
-    sys.exit(-1)
-
-
+#------------------------------------------------------------------------------

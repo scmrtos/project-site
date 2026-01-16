@@ -29,6 +29,7 @@ def namegen(fullpath, ext):
 
 #-------------------------------------------------------------------------------
 def pexec(cmd, wdir = os.curdir, exec_env=os.environ.copy(), filter=[]):
+    #print(os.linesep, ' '.join(cmd))
     p = subprocess.Popen(cmd,
                          cwd = str(wdir),
                          env=exec_env,

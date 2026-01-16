@@ -1,5 +1,6 @@
 
-from utils import *
+from pathlib import Path
+from utils   import *
 
 pd_opt = [
     '--lua-filter=script/br2newline.lua',
@@ -13,8 +14,11 @@ pd_opt = [
     '-V', 'listings-disable-line-numbers=true',
     '--pdf-engine=xelatex',
     '--pdf-engine-opt=--shell-escape',
+    '--pdf-engine-opt=-interaction=scrollmode',
+    '--pdf-engine-opt=-output-directory=build',
     '--toc',
     '--toc-depth=4',
+    #'--file-scope',
     '--number-sections',
     '--no-highlight',
     '-V', 'listings=false',
@@ -35,6 +39,7 @@ pd_opt = [
     '-V', 'date=\\today'
 ]
 
+#------------------------------------------------------------------------------
 def md2tex(src, trg):
     cmd = ['pandoc'] + pd_opt + ['-o'] + [trg]  + src
 
@@ -47,6 +52,7 @@ def md2tex(src, trg):
     print_success('Markdown -> TeX Done')
     return True
 
+#------------------------------------------------------------------------------
 def tex2pdf(tex):
     cmd = f'xelatex --shell-escape -output-directory=build {tex}'
     print_info(cmd)
@@ -58,3 +64,34 @@ def tex2pdf(tex):
 
     print_success('TeX -> PDF Done')
     return True
+
+#------------------------------------------------------------------------------
+def md2pdf(src, trg):
+    cmd = ['pandoc'] + pd_opt + ['-o'] + [trg]  + src
+
+    rc = pexec(cmd)
+
+    if rc:
+        print_error('E: md2pdf failed')
+        return False
+
+    print_success('Markdown -> PDF Done')
+    return True
+
+#------------------------------------------------------------------------------
+def build_pdf(src, trg_name, bdir = 'build'):
+    tex = str(Path(bdir) / f'{trg_name}.tex')
+    pdf = str(Path(bdir) / f'{trg_name}.pdf')
+
+    return md2pdf(src, pdf)
+
+    # not necessary create tex because pandoc produces input.tex for xelatex
+    #      
+    # if md2tex(src, tex):
+    #     #pass
+    #     if not md2pdf(src, pdf):
+    #         sys.exit(-2)
+    # else:
+    #     sys.exit(-1)
+
+#------------------------------------------------------------------------------
