@@ -34,7 +34,7 @@ nav:
         - Ports                          : ports.md
 
     - Appendix:
-        - Debug                          : debug.md
+        - Debugging                      : debug.md
         - Process Profiling              : profiler.md
         - 'Example: Job Queue'           : example-job-queue.md
         - Glossary                       : glossary.md
