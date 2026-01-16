@@ -44,9 +44,16 @@ pd_opt = [
 
     '-V', 'block-headings=true',
     '-V', 'header-includes=\\widowpenalty=10000 \\clubpenalty=10000 \\RedeclareSectionCommand[beforeskip=1.8ex plus 0.5ex minus 0.2ex,afterskip=0.8ex plus 0.2ex minus 0.1ex,font=\\large\\bfseries]{paragraph}\\RedeclareSectionCommand[beforeskip=1.4ex plus 0.4ex minus 0.2ex,afterskip=0.6ex plus 0.1ex minus 0.1ex,font=\\normalsize\\bfseries\\itshape]{subparagraph}',
-    '-V', 'title=scmRTOS User Manual',
-    '-V', 'author=scmRTOS Team',
     '-M', 'secnumdepth=4',
+
+    '-V', 'titlepage',
+    #'-V', 'titlepage-logo=docs/scmrtos.png',  
+    '-V', 'titlepage-rule-color=647687',
+    '-V', 'titlepage-background=docs/title-bg.png',
+    '-V', 'titlepage-text-color=eaecef',
+
+    #'-V', 'title=scmRTOS User Manual',
+    #'-V', 'author=scmRTOS Team',
     '-V', 'classoption=twoside',
     '-V', 'geometry=inner=3cm,outer=2cm,top=2.5cm,bottom=3cm',
 
@@ -58,6 +65,7 @@ pd_opt = [
     '-V', 'footer-center=scmRTOS User Manual',
     '-V', 'footer-right=\\thepage',
     '-V', 'date=\\today',
+    '-V', 'titledate=2026'
 ]
 
 #------------------------------------------------------------------------------
