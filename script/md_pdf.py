@@ -43,10 +43,10 @@ pd_opt = [
 
     '-V', 'block-headings=true',
     '-V', 'header-includes=\\widowpenalty=10000 \\clubpenalty=10000 \\RedeclareSectionCommand[beforeskip=1.8ex plus 0.5ex minus 0.2ex,afterskip=0.8ex plus 0.2ex minus 0.1ex,font=\\large\\bfseries]{paragraph}\\RedeclareSectionCommand[beforeskip=1.4ex plus 0.4ex minus 0.2ex,afterskip=0.6ex plus 0.1ex minus 0.1ex,font=\\normalsize\\bfseries\\itshape]{subparagraph}',
-    '-M', 'secnumdepth=0',
     '-V', 'title=scmRTOS User Manual',
     '-V', 'author=scmRTOS Team',
     '-V', 'date=\\today'
+    '-M', 'secnumdepth=4',
 ]
 
 #------------------------------------------------------------------------------
