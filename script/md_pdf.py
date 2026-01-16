@@ -49,7 +49,7 @@ pd_opt = [
     '-V', 'titlepage',
     #'-V', 'titlepage-logo=docs/scmrtos.png',  
     '-V', 'titlepage-rule-color=647687',
-    '-V', 'titlepage-background=docs/title-bg.png',
+    '-V', 'titlepage-background=docs/img/title-bg.png',
     '-V', 'titlepage-text-color=eaecef',
 
     #'-V', 'title=scmRTOS User Manual',
