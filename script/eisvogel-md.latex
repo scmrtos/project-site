@@ -1003,10 +1003,10 @@ $endif$
 
 \usepackage[outputdir=build]{minted}
 
-\usemintedstyle{monokai}  % default, vs, tango, monokai, etc
+\usemintedstyle{tango}  % default, vs, tango, monokai, etc
 
-\definecolor{codebg}{rgb}{0.15,0.15,0.15} % Тёмно-серый цвет
-\definecolor{navy}{HTML}{001F3F} % Цвет Navy
+\definecolor{codebg}{rgb}{0.95,0.95,0.95} % dark gray
+\definecolor{navy}{HTML}{001F3F}          % Navy
 
 \setminted{
     fontsize=\footnotesize,  
