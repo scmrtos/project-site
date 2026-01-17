@@ -17,13 +17,13 @@ function Pandoc(doc)
               info    = "blue",
               error   = "red"
             }
-            local color = colors[typ] or "gray"  -- дефолт
-
 
             local color = colors[typ] or "blue"
-            
+
             local tcb_open = string.format([[
                 \begin{tcolorbox}[colback=%s!5!white, 
+                                  breakable,
+                                  enhanced,
                                   colframe=%s!75!black,
                                   title={%s},
                                   fonttitle=\bfseries,
