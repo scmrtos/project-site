@@ -12,12 +12,12 @@ import os
 import sys
 import subprocess
 import re
-import glob
+import shutil
 import yaml
 import select
 
 from colorama import Fore, Style
-
+from pathlib  import Path
 
 COLORING_DISABLE = False
 
@@ -182,4 +182,10 @@ def get_name(path):
 #-------------------------------------------------------------------------------
 def drop_suffix(name):
     return os.path.splitext(name)[0]
+#-------------------------------------------------------------------------------
+def move_file(src, dst):
+    src, dst = Path(src), Path(dst)
+    dst.mkdir(parents=True, exist_ok=True)
+    shutil.move(src, dst / src.name)
+
 #-------------------------------------------------------------------------------

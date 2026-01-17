@@ -2,11 +2,10 @@
 
 import os
 import sys
-from pathlib import Path
 
+from pathlib import Path
 from utils import *
 
-#from md_pdf import md2tex, tex2pdf, md2pdf
 from md_pdf import build_pdf
 
 #------------------------------------------------------------------------------
@@ -56,5 +55,9 @@ Path(build_dir).mkdir(exist_ok=True)
 
 for src, trg in seq:
     status, res = build_pdf(src, trg)
+    if status: # Ok
+        move_file(res, 'site/pdf')
+    else:
+        sys.exit(-1)
 
 #------------------------------------------------------------------------------

@@ -1,3 +1,5 @@
+import os
+import shutil
 
 from pathlib import Path
 from utils   import *
@@ -123,10 +125,17 @@ def md2pdf(src, trg):
 
 #------------------------------------------------------------------------------
 def build_pdf(src, trg_name, bdir = 'build'):
+
+    shutil.rmtree(bdir)
+
     tex = str(Path(bdir) / f'{trg_name}.tex')
     pdf = str(Path(bdir) / f'{trg_name}.pdf')
 
-    return md2pdf(src, pdf)
+    status = md2pdf(src, pdf)
+    if status:
+        return True, pdf
+    else:
+        return False, status
 
     # not necessary create tex because pandoc produces input.tex for xelatex
     #      
