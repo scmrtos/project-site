@@ -10,7 +10,7 @@ The following target platforms are supported for now.
 | Cortex-M | Yes | Yes      | –           | –          |
 | Cortex-A | Yes | No       | –           | –          |
 | Blackfin | Yes | –        | Yes         | Yes        |
-| STM8     | No  | Yes      | –           | –          |
+| STM8     | –   | Yes      | –           | –          |
 
 
 <br>
