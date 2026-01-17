@@ -1,4 +1,4 @@
-# Целевые платфомы <span id="platforms-supported-targets"></span>
+# Целевые платформы <span id="platforms-supported-targets"></span>
 
 В настоящее время поддерживаются следующие целевые платформы:
 
@@ -13,4 +13,4 @@
 | STM8     | –   | Yes      | –           | –          |
 
 <br>
-'–' means toolchain does not support CPU/MCU
+'–' означает, что тулчейн не поддерживает CPU/MCU
