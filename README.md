@@ -50,13 +50,13 @@ To build PDF documentation launch `script/md2pdf.py`. This commant creates `buil
 To clean build clear the target directory and then make build:
 
 ```
-rm -rf build && script/md2pdf.py
+script/md2pdf.py
 ```
 
 or with automatic viewing result
 
 ```
-rm -rf build && script/md2pdf.py && atril build/scmrtos-en.pdf
+script/md2pdf.py && atril build/scmrtos-en.pdf
 ```
 
 where `atril` is PDF viewer, can be used any suitable one.
