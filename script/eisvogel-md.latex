@@ -1026,7 +1026,8 @@ $endif$
 
 % additions C++ settins (optional)
 \setminted[cpp]{
-    linenos=false % remome line numbers
+    linenos=false,          % remome line numbers
+    ignorelexererrors=true  % prevent red frames over some symbols on code blocks
 }
 
 % globally disable orphan lines before listings
