@@ -156,3 +156,12 @@ figcaption {
     text-align: center;
 }
 
+/* define classes for color symbols */
+.symbol-check {
+    color: #00cc00;
+    font-weight: bold;
+}
+.symbol-cross {
+    color: #DC143C;
+    font-weight: bold;
+}
