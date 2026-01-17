@@ -1,5 +1,5 @@
 
-# scmRTOS
+# Предисловие
 
 Название **scmRTOS** расшифровывается как **Single-Chip Microcontroller Real Time Operating System**.
 
