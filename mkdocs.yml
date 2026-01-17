@@ -40,8 +40,8 @@ nav:
         - Glossary                       : glossary.md
 
 extra_javascript:
-    - js/mathjax.js
-    - js/mathjax/tex-mml-chtml.js
+    - static/js/mathjax.js
+    - static/js/mathjax/tex-mml-chtml.js
     #- js/wavedrom.min.js
     #- js/wavedrom_loader.js
     #- js/wavedrom.unpkg.js
