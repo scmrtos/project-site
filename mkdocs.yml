@@ -92,13 +92,13 @@ plugins:
               name: Русский
               build: true
               nav:
-                - Общие сведения                     : index.md 
+                - О проекте                          : index.md
                 - Характеристики                     : features.md
                 - Поддерживаемые платформы           : platforms.md
 
                 - Введение:
                     - Предисловие                    : preface.md 
-                    - Обзор операционной системы     : overview.md
+                    - Общие сведения                 : overview.md
                 
                 - Компоненты:
                     - Ядро                           : kernel.md

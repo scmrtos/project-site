@@ -120,7 +120,7 @@ The user must also ensure that counters do not overflow during the profiling per
 
 Integrating the profiler into a project is done by including the header file `profiler.h` in the project's configuration file `scmRTOS_extensions.h`.
 
-### Usage
+### Application
 
 #### Statistical (Sampling) Method
 

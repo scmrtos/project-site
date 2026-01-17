@@ -1,6 +1,6 @@
 # Kernel <span id="kernel-kernel"></span>
 
-## Brief Information
+## General
 
 The OS kernel performs:
 
@@ -273,7 +273,7 @@ Support for interprocess communication boils down to providing a set of function
 
 ### Interrupts
 
-#### Usage Features with RTOS and Implementation
+#### Using with RTOS: Key Features and Implementation
 
 An occurring interrupt can serve as a source of an event that requires handling by one or more processes. To minimize (and ensure determinism of) the response time to the event, process rescheduling is used when necessary, transferring control to the highest-priority process that is ready-to-run.
 

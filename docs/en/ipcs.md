@@ -21,7 +21,7 @@ The interprocess communication services included in **scmRTOS** distribution are
 
 ----
 
-## TService
+## TService Class
 
 ### Class Definition
 
@@ -93,7 +93,7 @@ For the `resume_all()` and `resume_next_ready()` functions, there are versions o
 
 [^ipcs-7]: Therefore, a full description is not provided.
 
-### Usage
+### How to Use
 
 #### Preliminary Notes
 

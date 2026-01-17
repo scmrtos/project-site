@@ -1,6 +1,6 @@
-# Operating System Overview <span id="overview-overview"></span>
+# Overview <span id="overview-overview"></span>
 
-## General
+## Brief Description
 
 **scmRTOS** is a real-time operating system featuring priority-based preemptive multitasking. The OS supports up to 32 processes (including the system **IdleProc** process, i.e., up to 31 user processes), each with a unique priority. All processes are static, meaning their number is defined at the project build stage and they cannot be added or removed at runtime.
 
