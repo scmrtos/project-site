@@ -37,9 +37,9 @@ nav:
         - Glossary                       : glossary.md
 
 extra_javascript:
-    - static/js/mathjax.js
-    - static/js/mathjax/tex-mml-chtml.js
-    - static/js/color-symbols.js
+    - extra_js/mathjax.js
+    - extra_js/mathjax/tex-mml-chtml.js
+    - extra_js/color-symbols.js
     #- js/wavedrom.min.js
     #- js/wavedrom_loader.js
     #- js/wavedrom.unpkg.js
