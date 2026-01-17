@@ -47,7 +47,7 @@ This method eliminates the primary drawback of statistical profiling&nbsp;– lo
 
 ### Usage
 
-To use the profiler in a user project, a time measurement function must be defined and the profiler included in the project. For details, see [the example in the Appendix on Process Profiling](profiler.md).
+To use the profiler in a user project, a time measurement function must be defined and the profiler included in the project. For details, see [Process Profiling example](profiler.md#profiler-profiler).
 
 ## Process Names
 
@@ -91,7 +91,7 @@ Listing 1. Example of Printing Debug Information
 
 The above code produces output similar to:
 
-```
+```cpp
 ------------------------------
 #0 | CPU 82.52 | Slack 164 | Idle
 #1 | CPU  0.00 | Slack 178 | Background

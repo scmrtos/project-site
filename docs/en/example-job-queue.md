@@ -1,4 +1,4 @@
-# Job Queue
+# Job Queue <span id="example-job-queue"></span>
 
 ## Introduction
 
@@ -6,9 +6,9 @@ The job queue examined in this example is a message queue based on pointers to j
 
 First, there is no need for untyped pointers: the template mechanism allows efficient and safe use of pointers to concrete types, eliminating the need for manual type casting.
 
-Second, flexibility of pointer-based messages can be further enhanced by allowing not only data transfer but also, in a sense, "exporting" actions: the message not only carries data but also enables specific actions to be performed at the receiving end of the queue. This is easily achieved through a hierarchy of polymorphic job classes[^1]. The approach described will be implemented in this example.
+Second, flexibility of pointer-based messages can be further enhanced by allowing not only data transfer but also, in a sense, "exporting" actions: the message not only carries data but also enables specific actions to be performed at the receiving end of the queue. This is easily achieved through a hierarchy of polymorphic job classes[^example-job-queue-1]. The approach described will be implemented in this example.
 
-[^1]: For those new to C++ but familiar with C, an analogy can be drawn regarding technical implementation. The essence of polymorphism is performing different actions under the same description. C++ supports two kinds of polymorphism: static and dynamic. Static polymorphism is implemented via templates. Dynamic polymorphism is based on virtual functions. A hierarchy of polymorphic classes is built using dynamic polymorphism.
+[^example-job-queue-1]: For those new to C++ but familiar with C, an analogy can be drawn regarding technical implementation. The essence of polymorphism is performing different actions under the same description. C++ supports two kinds of polymorphism: static and dynamic. Static polymorphism is implemented via templates. Dynamic polymorphism is based on virtual functions. A hierarchy of polymorphic classes is built using dynamic polymorphism.
 
     Technically, the virtual function mechanism is implemented using tables of function pointers. Therefore, a similar mechanism could be implemented in C&nbsp;– for example, using structures containing pointers to arrays of function pointers. However, in C this would require much manual work, making it error-prone, less readable, labor-intensive, and inconvenient. C++ simply shifts all the routine work to the compiler, relieving the user from writing low-level code involving function pointer tables, their correct initialization, and usage.
 
@@ -18,9 +18,9 @@ This example demonstrates a method of delegating job execution implemented using
 
 ## Problem Statement
 
-Developing virtually any program involves performing various actions, and these actions generally differ in importance and execution priority which motivates the use of operating systems with priority-based schedulers. It often happens that, while handling events in a process, a need arises to perform an action requiring significant CPU time[^2] but without urgency, meaning it can quite reasonably be executed in a lower-priority process. In such cases, it is sensible not to delay the current process by performing the action directly, but to delegate its execution to another, lower-priority process.
+Developing virtually any program involves performing various actions, and these actions generally differ in importance and execution priority which motivates the use of operating systems with priority-based schedulers. It often happens that, while handling events in a process, a need arises to perform an action requiring significant CPU time[^example-job-queue-2] but without urgency, meaning it can quite reasonably be executed in a lower-priority process. In such cases, it is sensible not to delay the current process by performing the action directly, but to delegate its execution to another, lower-priority process.
 
-[^2]: For example, extensive computations or updating the screen context in a program with a graphical user interface.
+[^example-job-queue-2]: For example, extensive computations or updating the screen context in a program with a graphical user interface.
 
 Moreover, such situations may occur multiple times in a program, and a logical solution is to create a dedicated low-priority process to which such jobs can be delegated from other processes when execution in high-priority processes is undesirable or impossible due to task constraints. The job transfer mechanism is conveniently implemented using polymorphic job classes and the `OS::channel` service as the transport for job objects.
 
@@ -38,9 +38,9 @@ All jobs—regardless of which process generated them or what specifically needs
 
 Thus, there is a job object with its primary common property defined: it can be executed.
 
-For brevity, two different types of time-consuming jobs[^3] will be considered:
+For brevity, two different types of time-consuming jobs[^example-job-queue-3] will be considered:
 
-[^3]: Obviously, this number can easily be increased if needed.
+[^example-job-queue-3]: Obviously, this number can easily be increased if needed.
 
 * Сomputational&nbsp;– for example, evaluating a polynomialю
 * Тransferring a significant amount of data&nbsp;– updating the screen buffer.
@@ -114,9 +114,9 @@ Objects of these classes will represent the jobs whose execution is delegated to
 Listing 1. Types and Objects in the Job Delegation Example  
 ///
 
-The abstract base class `Job` defines the job object interface. Objects of this class cannot exist in the program. In this case, the interface is limited to a single function `execute()`, which enables the job to be run[^4]. Two concrete job classes—`Polyval` and `UpdateScreen`—are then defined, each targeted at specific goals: the first computes a polynomial value, the second updates the screen buffer.
+The abstract base class `Job` defines the job object interface. Objects of this class cannot exist in the program. In this case, the interface is limited to a single function `execute()`, which enables the job to be run[^example-job-queue-4]. Two concrete job classes—`Polyval` and `UpdateScreen`—are then defined, each targeted at specific goals: the first computes a polynomial value, the second updates the screen buffer.
 
-[^4]: The interface can be extended with additional pure virtual functions if needed.
+[^example-job-queue-4]: The interface can be extended with additional pure virtual functions if needed.
 
 The remaining code is entirely standard: it follows the conventional C++ approach to defining types and objects, recommended for use with **scmRTOS**. Note that type definitions and object declarations can be placed in different files (headers and source files) as convenient for the project. Naturally, to avoid compilation errors, type definitions must be visible at points of object declaration&nbsp;– this is a standard requirement of C/C++.
 
@@ -164,12 +164,12 @@ The actual job delegation code based on the queue is shown below.
 Listing 2. Process Executable Functions  
 ///
 
-In this example, two high-priority processes delegate part of their responsibilities to a lower-priority (background) process by placing jobs (with or without data[^5]) into a queue that the background process handles.
+In this example, two high-priority processes delegate part of their responsibilities to a lower-priority (background) process by placing jobs (with or without data[^example-job-queue-5]) into a queue that the background process handles.
 
-The background process itself "knows" nothing about what needs to be done for each job&nbsp;– its only responsibility is to launch the specified job, which contains sufficient information about what and how to do. The key point is that the delegated job executes with the appropriate (low, in this case) priority, without delaying high-priority processes[^6].
+The background process itself "knows" nothing about what needs to be done for each job&nbsp;– its only responsibility is to launch the specified job, which contains sufficient information about what and how to do. The key point is that the delegated job executes with the appropriate (low, in this case) priority, without delaying high-priority processes[^example-job-queue-6].
 
-[^5]: A job may include any data that the sender places inside the job object.
-[^6]: This applies not only to the processes delegating the job but also to other processes that might be blocked by lengthy job execution in high-priority processes.
+[^example-job-queue-5]: A job may include any data that the sender places inside the job object.
+[^example-job-queue-6]: This applies not only to the processes delegating the job but also to other processes that might be blocked by lengthy job execution in high-priority processes.
 
 Obviously, periodic background actions can easily be organized in the job-handling process. This is achieved by calling `pop()` with a timeout: upon timeout expiration, the process receives control, and the required actions can be performed at that moment. Coordinating these actions with job execution depends on project requirements and user decisions.
 
@@ -181,15 +181,16 @@ Technical aspects to note:
 Overall, the mechanism described is quite simple, has low overhead, and allows flexible distribution of program load across execution priorities.
 
 !!! info "**NOTE**"
+
     The mechanism demonstrated above can be applied not only for executing low-priority jobs but also, conversely, for high-priority execution, relevant when a job requires urgency not provided by the originating process's priority.
 
-    Technically, job transfer organization is identical to that described, with the only difference being that the job-handling process is a foreground[^7] rather than background process.
+    Technically, job transfer organization is identical to that described, with the only difference being that the job-handling process is a foreground[^example-job-queue-7] rather than background process.
 
-[^7]: Relative to the processes placing jobs in the queue.
+    [^example-job-queue-7]: Relative to the processes placing jobs in the queue.
 
-#### Mutual-Exclusion Semaphores (Mutexes) and the Problem of Blocking High-Priority Processes
+### Mutexes and the Problem of Blocking High-Priority Processes
 
-When discussing features of shared resource access from different processes via mutual-exclusion semaphores, a situation was described that is addressed by the [priority inheritance method](ipcs.md#mutex-priority-inversion).
+When discussing features of shared resource access from different processes via mutual-exclusion semaphores, a situation was described that is addressed by the [priority inheritance method](ipcs.md#ipcs-mutex-priority-inversion).
 
 The essence was that, under certain circumstances, a low-priority process can indirectly block a high-priority process. To solve this problem, the technique known as "priority inheritance" is often used: when a high-priority process attempts to acquire a mutex already held by a low-priority process, instead of simply waiting normally, the priorities are temporarily swapped until the mutex is released.
 

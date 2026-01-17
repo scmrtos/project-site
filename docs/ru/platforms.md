@@ -1,6 +1,6 @@
+# Целевые платфомы <span id="platforms-supported-targets"></span>
 
-#### Таблица поддерживаемых платформ
-
+В настоящее время поддерживаются следующие целевые платформы:
 
 | CPU/MCU  | GCC | EW (IAR) | VDSP++ (ADI)| CCES (ADI) |
 |----------|:---:|:--------:|:-----------:|:----------:|
@@ -12,5 +12,5 @@
 | Blackfin | Yes | –        | Yes         | Yes        |
 | STM8     | No  | Yes      | –           | –          |
 
-----
+<br>
 '–' means toolchain does not support CPU/MCU

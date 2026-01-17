@@ -1,15 +1,16 @@
-# Operating System Overview
+# Overview <span id="overview-overview"></span>
 
-## General Information
+## Brief Description
 
 **scmRTOS** is a real-time operating system featuring priority-based preemptive multitasking. The OS supports up to 32 processes (including the system **IdleProc** process, i.e., up to 31 user processes), each with a unique priority. All processes are static, meaning their number is defined at the project build stage and they cannot be added or removed at runtime.
 
-<a name="avoid-dynamic-process"></a>
-The decision to forgo dynamic process creation is driven by resource conservation considerations, as resources in single-chip microcontrollers are limited. Dynamic process deletion is also not implemented, as it offers little benefit: the program memory used by the process is not freed, and RAM for subsequent use would require allocation/deallocation via a memory manager, which is a complex component that consumes significant resources and is generally not used in single-chip microcontroller projects[^1].
+<span id="overview-avoid-dynamic-process"></span>
+
+The decision to forgo dynamic process creation is driven by resource conservation considerations, as resources in single-chip microcontrollers are limited. Dynamic process deletion is also not implemented, as it offers little benefit: the program memory used by the process is not freed, and RAM for subsequent use would require allocation/deallocation via a memory manager, which is a complex component that consumes significant resources and is generally not used in single-chip microcontroller projects[^overview-1].
 
 In the current version, process priorities are also static: each process is assigned a priority at the project build stage, and the priority cannot be changed during program execution. This approach is motivated by the goal of making the system as lightweight as possible in terms of resource requirements while maintaining high responsiveness. Changing priorities during system operation is a non-trivial mechanism that, for correct operation, requires analyzing the state of the entire system (kernel, services) followed by modifications to kernel components and other OS parts (semaphores, event flags, etc.). This inevitably leads to prolonged periods with interrupts disabled, significantly degrading the system's dynamic characteristics.
 
-[^1]: This refers to the standard memory manager typically provided with development tools. There are situations where program operation requires storing data between function calls (i.e., automatic storage on the stack or in CPU registers is unsuitable), and the amount of such data is unknown at compile time&nbsp;– their creation and lifetime are determined by events occurring at runtime. The best approach for storing such data is in free memory&nbsp;– the "heap." These operations are usually handled by a memory manager.Thus, some applications cannot do without it, but given the resource consumption of standard memory managers, their use is often unacceptable.
+[^overview-1]: This refers to the standard memory manager typically provided with development tools. There are situations where program operation requires storing data between function calls (i.e., automatic storage on the stack or in CPU registers is unsuitable), and the amount of such data is unknown at compile time&nbsp;– their creation and lifetime are determined by events occurring at runtime. The best approach for storing such data is in free memory&nbsp;– the "heap." These operations are usually handled by a memory manager.Thus, some applications cannot do without it, but given the resource consumption of standard memory managers, their use is often unacceptable.
 
     In such cases, a specialized memory manager tailored to the application's needs is frequently employed. Considering the above, creating a universal memory manager equally suitable for diverse projects is impractical, which explains the absence of a memory manager in **scmRTOS**.
 
@@ -27,7 +28,7 @@ The kernel handles:
 * System time support (system timer).
 * Extension support.
 
-For more details on the kernel's structure, composition, functions, and mechanisms, see the ["Kernel" section](kernel.md).
+For more details on the kernel's structure, composition, functions, and mechanisms, see the [Kernel section](kernel.md#kernel-kernel).
 
 ### Processes
 
@@ -35,7 +36,8 @@ Processes provide the ability to create a separate (asynchronous with respect to
 
 The executable function must contain an infinite loop that serves as the main loop of the process, see "Listing 1. Process executable function" for an example.
 
-<a name="process-exec"></a>
+<span id="overview-process-exec"></span>
+
 ```cpp
 1    template<> void slon_proc::exec()
 2    {
@@ -52,12 +54,13 @@ The executable function must contain an infinite loop that serves as the main lo
 Listing 1. Process Execution Function
 ///
 
-Upon system startup, control is transferred to the process function, where declarations of used data (line 3) and initialization code (line 4) can be placed at the beginning, followed by the process's main loop (lines 5–8). User code must be written to prevent exiting the process function. For example, once entering the main loop, do not leave it (the primary approach), or if exiting the main loop, enter another loop (even an empty one) or an infinite "sleep" by calling the `sleep()` function[^2] without parameters (or with parameter "0"), see [The sleep() Function](processes.md#process-sleep) for details. The process code must not contain `return` statements.
+Upon system startup, control is transferred to the process function, where declarations of used data (line 3) and initialization code (line 4) can be placed at the beginning, followed by the process's main loop (lines 5–8). User code must be written to prevent exiting the process function. For example, once entering the main loop, do not leave it (the primary approach), or if exiting the main loop, enter another loop (even an empty one) or an infinite "sleep" by calling the `sleep()` function[^overview-2] without parameters (or with parameter "0"), see [The sleep() Function](processes.md#processes-process-sleep) for details. The process code must not contain `return` statements.
 
-[^2]: In this case, no other process should "wake" this sleeping process before exit, as it would lead to undefined behavior and likely cause the system to crash. The only safe action applicable to a process in this state is to terminate it (with the option to restart from the beginning); see [Process Restart](processes.md#process-restart).
+[^overview-2]: In this case, no other process should "wake" this sleeping process before exit, as it would lead to undefined behavior and likely cause the system to crash. The only safe action applicable to a process in this state is to terminate it (with the option to restart from the beginning); see [Process Restart](processes.md#processes-process-restart).
 
 !!! info "**NOTE**"
-    In the example shown, the role of the process executable function is played by the `exec()` function&nbsp;– a static member function of the class that describes the process type. This is not the only way to define a process executable function: in addition to a static member function, any function of the form `void fun()` can be used, whose address must be passed to the process constructor. This includes the ability to inline the function body as a constructor argument using the C++ lambda function mechanism. For more details see ["Alternative Ways to Declare a Process Object"](processes.md#process-alternate-exec)
+
+    In the example shown, the role of the process executable function is played by the `exec()` function&nbsp;– a static member function of the class that describes the process type. This is not the only way to define a process executable function: in addition to a static member function, any function of the form `void fun()` can be used, whose address must be passed to the process constructor. This includes the ability to inline the function body as a constructor argument using the C++ lambda function mechanism. For more details see ["Alternative Ways to Declare a Process Object"](processes.md#processes-alternate-process-exec)
 
 
 
@@ -67,9 +70,9 @@ Since processes execute in parallel and asynchronously relative to each other, s
 
 To prevent such issues, special measures are required: access within critical sections (where context switching is disabled) or using dedicated interprocess communication services. In **scmRTOS**, these include:
 
-* Event flags (`OS::TEventFlag`);
-* Mutual exclusion semaphores (`OS::TMutex`);
-* Channels for data transfer as queues of bytes or arbitrary-type objects (`OS::channel`);
+* Event flags (`OS::TEventFlag`).
+* Mutual exclusion semaphores (`OS::TMutex`).
+* Channels for data transfer as queues of bytes or arbitrary-type objects (`OS::channel`).
 * Messages (`OS::message`).
 
 The developer must decide which service (or combination) to use in each case, based on task requirements, available resources, and personal preferences.
@@ -101,37 +104,37 @@ The common part source code is in eight files:
 * **usrlib.h**. Support library type and template definitions.
 * **usrlib.cpp**. Support library function definitions.
 
-As evident from the list, **scmRTOS** includes a small support library containing code used by OS components[^3]. Since this library is not essentially part of the OS, it will not be discussed further here.
+As evident from the list, **scmRTOS** includes a small support library containing code used by OS components[^overview-3]. Since this library is not essentially part of the OS, it will not be discussed further here.
 
-[^3]: In particular, the ring buffer class/template.
+[^overview-3]: In particular, the ring buffer class/template.
 
 The platform-dependent part source code is in three files:
 
 * **os_target.h**. Platform-dependent declarations and macros.
-* **os_target_asm.ext**[^4]. Low-level code for context switching and OS startup functions.
+* **os_target_asm.ext**[^overview-4]. Low-level code for context switching and OS startup functions.
 * **os_target.cpp**. Process stack frame initialization function definition, system timer interrupt handler, and the idle process root function.
 
-[^4]: Assembly file extension for the target processor.
+[^overview-4]: Assembly file extension for the target processor.
 
 The project-dependent part consists of three header files:
 
 * **scmRTOS_config.h**. Configuration macros and type aliases, particularly for timeout object bit widths.
 * **scmRTOS_target_cfg.h**. Code for tailoring OS mechanisms to the project; e.g., specifying the interrupt vector for the system timer handler, system timer control macros, context switch interrupt activation function definition, etc.
-* **scmRTOS_extensions.h**. Extension inclusion control. See [TKernelAgent and Extensions](kernel.md#kernel-agent) for details.
+* **scmRTOS_extensions.h**. Extension inclusion control. See [Kernel Agent and Extensions](kernel.md#kernel-kernel-agent) for details.
 
 ### Internal Structure
 
 Everything related to **scmRTOS**, except a few assembly-implemented functions with `extern "C"` linkage, is placed inside the `OS` namespace that provides a dedicated namespace for OS components.
 
-Within this namespace, the following classes are declared[^5]:
+Within this namespace, the following classes are declared[^overview-5]:
 
 * `TKernel`. Since only one kernel instance exists, there is only one object of this class. Users should not create the class instances.
 * `TBaseProcess`. Implements the base object type for the `process` template, on which all (user or system) processes are built.
 * `process`. Template for creating types of any OS process.
 * `TISRW`. Wrapper class to simplify and automate interrupt handler code creation. Its constructor handles entry actions, and destructor handles exit actions.
-* `TKernelAgent`. Special service class providing access to kernel resources for extending OS capabilities. It forms the basis for `TService` (base for all interprocess communication services) and the [process profiler template class](profiler.md).
+* `TKernelAgent`. Special service class providing access to kernel resources for extending OS capabilities. It forms the basis for `TService` (base for all interprocess communication services) and the [process profiler template class](profiler.md#profiler-profiler).
 
-[^5]: Nearly all OS classes are declared as friends of each other to ensure access among OS components to each other's internals.
+[^overview-5]: Nearly all OS classes are declared as friends of each other to ensure access among OS components to each other's internals.
 
 The service classes include:
 
@@ -143,7 +146,7 @@ The service classes include:
 
 Note that counting semaphores are absent from the list, as no compelling need for them was identified. Resources requiring counting semaphore control—primarily RAM—are in short supply in single-chip microcontrollers. Situations needing quantity tracking are handled using objects based on the `OS::channel` template, which already implement the corresponding mechanism in one form or another.
 
-If such a service is needed, the user can add it to the base set independently by creating their own implementation as an extension; see [TKernelAgent and Extensions](kernel.md#kernel-agent).
+If such a service is needed, the user can add it to the base set independently by creating their own implementation as an extension; see [Kernel Agent and Extensions](kernel.md#kernel-kernel-agent).
 
 **scmRTOS** provides the user with several functions for control:
 
@@ -155,44 +158,44 @@ If such a service is needed, the user can add it to the base set independently b
 
 ### Critical Sections
 
-Due to the preemptive nature of process execution, any process can be interrupted at an arbitrary moment. On the other hand, there are cases[^6] where it is necessary to prevent a process from being interrupted during the execution of a specific code fragment. This is achieved by disabling context switching[^7] for the duration of that fragment's execution. In other words, this fragment acts as a non-interruptible section.
+Due to the preemptive nature of process execution, any process can be interrupted at an arbitrary moment. On the other hand, there are cases[^overview-6] where it is necessary to prevent a process from being interrupted during the execution of a specific code fragment. This is achieved by disabling context switching[^overview-7] for the duration of that fragment's execution. In other words, this fragment acts as a non-interruptible section.
 
-[^6]: For example, accessing OS kernel variables or internals of interprocess communication services.
+[^overview-6]: For example, accessing OS kernel variables or internals of interprocess communication services.
 
-[^7]: In the current version of **scmRTOS**, this is achieved by globally disabling interrupts.
+[^overview-7]: In the current version of **scmRTOS**, this is achieved by globally disabling interrupts.
 
 In OS terms, such a section is called a critical section. To simplify the organization of a critical section, a special wrapper class `TCritSect` is used. Its constructor saves the state of the processor resource controlling global interrupt enable/disable and then disables interrupts. The destructor restores this processor resource to the state it was in before the interrupts were disabled.
 
 Thus, if interrupts were already disabled, they remain disabled. If they were enabled, they are re-enabled. The implementation of this class is platform-dependent, so its definition is contained in the corresponding file `os_target.h`.
 
-Using `TCritSect` is straightforward: at the point corresponding to the start of the critical section, simply declare an object of this type, and from the declaration point until the end of the block, interrupts will be disabled[^8].
+Using `TCritSect` is straightforward: at the point corresponding to the start of the critical section, simply declare an object of this type, and from the declaration point until the end of the block, interrupts will be disabled[^overview-8].
 
-[^8]: Upon exiting the block, the destructor is automatically called, restoring the state that existed before entering the critical section. This approach eliminates the possibility of "forgetting" to re-enable interrupts when exiting the critical section.
+[^overview-8]: Upon exiting the block, the destructor is automatically called, restoring the state that existed before entering the critical section. This approach eliminates the possibility of "forgetting" to re-enable interrupts when exiting the critical section.
 
 ### Type Aliases for Built-in Types
 
 To facilitate working with source code and improve portability, the following type aliases are introduced:
 
-* `TProcessMap` – type for defining a variable that serves as a process map. Its size depends on the number of processes in the system. Each process corresponds to a unique tag&nbsp;– a mask with only one non-zero bit positioned according to the process's priority. The highest-priority process corresponds to the least significant bit (position 0)[^9]. With fewer than 8 user processes, the process map size is 8 bits. With 8 to 15, it is 16 bits; with 16 or more user processes, it is 32 bits.
+* `TProcessMap` – type for defining a variable that serves as a process map. Its size depends on the number of processes in the system. Each process corresponds to a unique tag&nbsp;– a mask with only one non-zero bit positioned according to the process's priority. The highest-priority process corresponds to the least significant bit (position 0)[^overview-9]. With fewer than 8 user processes, the process map size is 8 bits. With 8 to 15, it is 16 bits; with 16 or more user processes, it is 32 bits.
 * `stack_item_t` – type for a stack element. Depends on the target architecture. For example, on 8-bit **AVR**, this type is defined as `uint8_t`; on 16-bit **MSP430**, as `uint16_t`; and on 32-bit platforms, typically as `uint32_t`.
 
-[^9]: This order is the default. If `scmRTOS_PRIORITY_ORDER` is defined as 1, the bit order in the process map is reversed: the most significant bit corresponds to the highest-priority process, and the least significant bit to the lowest-priority one. Reverse priority order can be useful for processors with hardware support for finding the first non-zero bit in a word, such as the **Blackfin** family.
+[^overview-9]: This order is the default. If `scmRTOS_PRIORITY_ORDER` is defined as 1, the bit order in the process map is reversed: the most significant bit corresponds to the highest-priority process, and the least significant bit to the lowest-priority one. Reverse priority order can be useful for processors with hardware support for finding the first non-zero bit in a word, such as the **Blackfin** family.
 
 ### Using the OS
 
 As noted earlier, to achieve maximum efficiency, static mechanisms are used wherever possible&nbsp;– i.e., all functionality is determined at compile time.
 
-This primarily concerns processes. Before using each process, its type must be defined[^10], specifying the process type name, its priority, and the size of the RAM area allocated for the [process stack](processes.md#process-stack). For example:
+This primarily concerns processes. Before using each process, its type must be defined[^overview-10], specifying the process type name, its priority, and the size of the RAM area allocated for the [process stack](processes.md#processes-process-stack). For example:
 
-[^10]: Each process is an object of a separate type (class) derived from the common base class `TBaseProcess`.
+[^overview-10]: Each process is an object of a separate type (class) derived from the common base class `TBaseProcess`.
 
 ```cpp
 OS::process<OS::pr2, 200> MainProc;
 ```
 
-This defines a process with priority `pr2` and a stack size of 200 bytes. Such a declaration may seem somewhat verbose due to its length, as referencing the process type requires writing the full expression&nbsp;– for example, when defining the process execution function[^11]:
+This defines a process with priority `pr2` and a stack size of 200 bytes. Such a declaration may seem somewhat verbose due to its length, as referencing the process type requires writing the full expression&nbsp;– for example, when defining the process execution function[^overview-11]:
 
-[^11]: The execution function of a specific process is technically a full specialization of the `OS::process::exec()` template member function, so its definition uses the template specialization syntax `template<>`.
+[^overview-11]: The execution function of a specific process is technically a full specialization of the `OS::process::exec()` template member function, so its definition uses the template specialization syntax `template<>`.
 
 ```cpp
 template<> void OS::process<OS::pr2, 200>::exec() { ... }
@@ -204,9 +207,9 @@ because the type is precisely the expression
 OS::process<OS::pr2, 200>
 ```
 
-A similar situation arises in other cases where referencing the process type is required. To eliminate this inconvenience, it is recommended to use **type aliases** introduced via `typedef` or `using`. This is the preferred coding style: first define type aliases for processes (preferably in a single header file for easy overview of all processes in the project), and then declare the actual process objects in the source files as needed. With this approach, the earlier example becomes[^12]:
+A similar situation arises in other cases where referencing the process type is required. To eliminate this inconvenience, it is recommended to use **type aliases** introduced via `typedef` or `using`. This is the preferred coding style: first define type aliases for processes (preferably in a single header file for easy overview of all processes in the project), and then declare the actual process objects in the source files as needed. With this approach, the earlier example becomes[^overview-12]:
 
-[^12]: It is recommended to declare a prototype of the process execution function specialization before the first instantiation of the template: this allows the compiler to recognize that a full specialization exists for that instance, avoiding attempts to generate the default template implementation. In some cases, this prevents compilation errors.
+[^overview-12]: It is recommended to declare a prototype of the process execution function specialization before the first instantiation of the template: this allows the compiler to recognize that a full specialization exists for that instance, avoiding attempts to generate the default template implementation. In some cases, this prevents compilation errors.
 
 ```cpp
 // In a header file
@@ -227,7 +230,8 @@ template<> void TMainProc::exec()
 There is nothing unusual about this sequence&nbsp;– it is the standard way of defining a type alias and creating an object of that type in C and C++.
 
 !!! warning "**IMPORTANT NOTE**"
-    When configuring the system, the number of processes must be explicitly specified. This number must exactly match the number of processes actually defined in the project; otherwise, the system will not function correctly. Note that priorities are specified using a dedicated enumerated type `TPriority`, which defines the allowed priority values[^13].
+
+    When configuring the system, the number of processes must be explicitly specified. This number must exactly match the number of processes actually defined in the project; otherwise, the system will not function correctly. Note that priorities are specified using a dedicated enumerated type `TPriority`, which defines the allowed priority values[^overview-13].
 
     Additionally, process priorities must be consecutive with no gaps. For example, if the system has 4 processes, their priorities must be `pr0`, `pr1`, `pr2`, and `pr3`. Duplicate priority values are also not allowed, each process must have a unique priority.
 
@@ -237,7 +241,7 @@ There is nothing unusual about this sequence&nbsp;– it is the standard way of 
 
     A dedicated tool currently exists to perform comprehensive configuration integrity checking. The utility is called **scmIC** (Integrity Checker) and can detect the vast majority of typical OS configuration errors.
 
-[^13]: This is done to improve type safety&nbsp;– arbitrary integer values cannot be used; only those defined in `TPriority` are permitted. The values in `TPriority` are tied to the process count specified via the configuration macro `scmRTOS_PROCESS_COUNT`. Thus, only a limited, valid set of priorities is available. Priority values take the form `pr0`, `pr1`, etc., where the number indicates the priority level. The system `IdleProc` process has its own dedicated priority designation: `prIDLE`.
+    [^overview-13]: This is done to improve type safety&nbsp;– arbitrary integer values cannot be used; only those defined in `TPriority` are permitted. The values in `TPriority` are tied to the process count specified via the configuration macro `scmRTOS_PROCESS_COUNT`. Thus, only a limited, valid set of priorities is available. Priority values take the form `pr0`, `pr1`, etc., where the number indicates the priority level. The system `IdleProc` process has its own dedicated priority designation: `prIDLE`.
 
 As mentioned earlier, defining process types in a header file is convenient, as it makes any process easily visible across different compilation units.
 
@@ -287,27 +291,56 @@ Listing 3. Declaring Processes in a Source File and Starting the OS
 
 Each process, as mentioned earlier, has an executable function. When using the scheme described above, this executable function is named `exec` and looks as shown in "Listing 1. Process Execution Function".
 
-Configuration information is specified in a dedicated header file `scmRTOS_config.h`. The list of configuration macros and their meanings[^14] are provided in "Table 1. Configuration Macros".
+Configuration information is specified in a dedicated header file `scmRTOS_config.h`. The list of configuration macros and their meanings[^overview-14] are provided below.
 
-[^14]: The table shows example values. In each project, values are set individually based on project requirements.
+[^overview-14]: The list shows example values. In each project, values are set individually based on project requirements.
 
-| Name                                      | Value   | Description                                                                 |
-|-------------------------------------------|---------|-----------------------------------------------------------------------------|
-| `scmRTOS_PROCESS_COUNT`                   | n       | Number of processes in the system                                           |
-| `scmRTOS_SYSTIMER_NEST_INTS_ENABLE`       | 0/1     | Enables nested interrupts in the system timer interrupt handler[^15]         |
-| `scmRTOS_SYSTEM_TICKS_ENABLE`             | 0/1     | Enables the system timer tick counter                                        |
-| `scmRTOS_SYSTIMER_HOOK_ENABLE`            | 0/1     | Enables calling the user-defined function<br>`system_timer_user_hook()` in the system timer interrupt<br> handler. If enabled, this function must be defined in user code |
-| `scmRTOS_IDLE_HOOK_ENABLE`                | 0/1     | Enables calling the user-defined function<br> `idle_process_user_hook()` in the `IdleProc` system process.<br> If enabled, this function must be defined in user code |
-| `scmRTOS_ISRW_TYPE`                       | `TISRW`<br>`TISRW_SS` | Selects the type of interrupt handler wrapper class for the system<br> timer: regular or with switching to a separate interrupt stack.<br>The `_SS` suffix stands for Separate Stack |
-| `scmRTOS_CONTEXT_SWITCH_SCHEME`           | 0/1     | Specifies the context switch method (scheme for transferring<br> control)       |
-| `scmRTOS_PRIORITY_ORDER`                  | 0/1     | Defines the priority order in the process map.<br>Value 0 means the highest-priority process corresponds to the<br> least significant bit in the process map (`TProcessMap`); value 1<br> means the highest-priority process corresponds to the most<br> significant (valid) bit |
-| `scmRTOS_IDLE_PROCESS_STACK_SIZE`         | N       | Sets the stack size for the background `IdleProc` process                   |
-| `scmRTOS_CONTEXT_SWITCH_USER_HOOK_ENABLE` | 0/1     | Enables calling the user-defined hook <br>`context_switch_user_hook()` during context switches. If enabled, the function must be defined<br> in user code |
-| `scmRTOS_DEBUG_ENABLE`                    | 0/1     | Enables debugging features                                                  |
-| `scmRTOS_PROCESS_RESTART_ENABLE`          | 0/1     | Allows interrupting any process at an arbitrary moment and<br> restarting it from the beginning |
+  * `scmRTOS_PROCESS_COUNT`
+    * **value** :  n
+    * **description** : Number of processes in the system.
+  
+  * `scmRTOS_SYSTIMER_NEST_INTS_ENABLE`
+    * **value** : 0/1.
+    * **description** : Enables nested interrupts in the system timer interrupt handler[^overview-15].
+  
+  * `scmRTOS_SYSTEM_TICKS_ENABLE`
+    * **value** : 0/1.
+    * **description** : Enables the system timer tick counter.
+  
+  * `scmRTOS_SYSTIMER_HOOK_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables calling the user-defined function `system_timer_user_hook()` in the system timer interrupt handler. If enabled, this function must be defined in user code.
 
-/// Caption
-Table 1. Configuration Macros
-///
+  * `scmRTOS_IDLE_HOOK_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables calling the user-defined function `idle_process_user_hook()` in the `IdleProc` system process. If enabled, this function must be defined in user code.
+  
+  * `scmRTOS_ISRW_TYPE`
+    * **value**: `TISRW`/`TISRW_SS`.
+    * **description**: Selects the type of interrupt handler wrapper class for the system timer: regular or with switching to a separate interrupt stack. The `_SS` suffix stands for Separate Stack.
 
-[^15]: If the port supports only one variant, the corresponding macro value is predefined in the port. The same applies to all other macros.
+  * `scmRTOS_CONTEXT_SWITCH_SCHEME`
+    * **value**: 0/1.
+    * **description**: Specifies the context switch method (scheme for transferring control).
+
+  * `scmRTOS_PRIORITY_ORDER`
+    * **value**: 0/1.
+    * **description**: Defines the priority order in the process map. Value 0 means the highest-priority process corresponds to the least significant bit in the process map (`TProcessMap`); value 1 means the highest-priority process corresponds to the most significant (valid) bit.
+
+  * `scmRTOS_IDLE_PROCESS_STACK_SIZE`
+    * **value**: N.
+    * **description**: Sets the stack size for the background `IdleProc` process.
+
+  * `scmRTOS_CONTEXT_SWITCH_USER_HOOK_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables calling the user-defined hook `context_switch_user_hook()` during context switches. If enabled, the function must be defined in user code.
+
+  * `scmRTOS_DEBUG_ENABLE`
+    * **value**: 0/1.
+    * **description**: Enables debugging features.
+
+  * `scmRTOS_PROCESS_RESTART_ENABLE`
+    * **value**: 0/1.
+    * **description**: Allows interrupting any process at an arbitrary moment and restarting it from the beginning.
+
+[^overview-15]: If the port supports only one variant, the corresponding macro value is predefined in the port. The same applies to all other macros.
