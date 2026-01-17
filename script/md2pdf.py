@@ -55,7 +55,7 @@ Path(build_dir).mkdir(exist_ok=True)
 for src, trg in seq:
     status, res = build_pdf(src, trg)
     if status: # Ok
-        move_file(res, 'site/pdf')
+        move_file(res, '.')
     else:
         sys.exit(-1)
 
