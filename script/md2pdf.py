@@ -42,12 +42,19 @@ path_ru = 'docs/ru'
 src_en = [str(Path(path_en) / i) for i in src_list]
 src_ru = [str(Path(path_ru) / i) for i in src_list]
 
+seq = \
+[
+    [src_en, trg_name_eng],
+    [src_ru, trg_name_rus]
+]
+
 #------------------------------------------------------------------------------
 #
 #    Actions
 #
 Path(build_dir).mkdir(exist_ok=True)
-build_pdf(src_en, trg_name_eng)
-build_pdf(src_ru, trg_name_rus)
+
+for src, trg in seq:
+    status, res = build_pdf(src, trg)
 
 #------------------------------------------------------------------------------
