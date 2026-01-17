@@ -14,6 +14,7 @@ pd_opt = [
     '-f', 'markdown+yaml_metadata_block'      # YAML at markdown source beginning
           '+pipe_tables'                      # markdown tables support
           '+tex_math_single_backslash'        # i.e. \frac instead of \\frac
+          '-smart',                           # turn off "smart" conversion for ", ', --, ...
     '-V', 'listings-disable-line-numbers=true',
     '--pdf-engine=xelatex',
     '--pdf-engine-opt=--shell-escape',

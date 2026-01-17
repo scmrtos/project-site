@@ -8,10 +8,7 @@ function Pandoc(doc)
         if block.tag == "Para" and pandoc.utils.stringify(block):match("!!!%s+") then
             local para_text = pandoc.utils.stringify(block)
             local typ = para_text:match("!!!%s+(%w+)")
-            local title = para_text:match('"([^"]+)"') or para_text:match("“([^”]+)”") or "Note"
-            
-            -- print("para_text:", para_text)
-
+            local title = para_text:match('"([^"]+)"') or "Note"
 
             local colors = {
               warning = "orange",
