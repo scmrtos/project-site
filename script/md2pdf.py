@@ -22,7 +22,6 @@ trg_name_rus = 'scmrtos-ru'
 #
 src_list = [
     'index.md',
-    'platforms.md',
     'preface.md',
     'overview.md',
     'kernel.md',

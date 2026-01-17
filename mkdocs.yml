@@ -19,11 +19,8 @@ extra_css:
 
 
 nav:
-    - Synopsis                           : index.md 
-    - Features                           : features.md
-    - Supported Platforms                : platforms.md
-
     - Intro:
+        - Synopsis                       : index.md 
         - Preface                        : preface.md 
         - Overview                       : overview.md
     
@@ -40,8 +37,9 @@ nav:
         - Glossary                       : glossary.md
 
 extra_javascript:
-    - js/mathjax.js
-    - js/mathjax/tex-mml-chtml.js
+    - static/js/mathjax.js
+    - static/js/mathjax/tex-mml-chtml.js
+    - static/js/color-symbols.js
     #- js/wavedrom.min.js
     #- js/wavedrom_loader.js
     #- js/wavedrom.unpkg.js
@@ -92,11 +90,8 @@ plugins:
               name: Русский
               build: true
               nav:
-                - О проекте                          : index.md
-                - Характеристики                     : features.md
-                - Поддерживаемые платформы           : platforms.md
-
                 - Введение:
+                    - О проекте                      : index.md
                     - Предисловие                    : preface.md 
                     - Общие сведения                 : overview.md
                 

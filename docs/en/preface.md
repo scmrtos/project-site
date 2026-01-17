@@ -16,8 +16,4 @@ In embedded systems development, C++ is sometimes viewed unfavorably due to misc
 
 !!! tip "**TIP**"
 
-    The history of **scmRTOS** and certain "philosophical" considerations regarding real-time operating systems are detailed in the [PDF document](https://github.com/scmrtos/scmrtos-doc/blob/master/pdf/scmRTOS.en.pdf).
-
-## Supported Platforms
-
-**scmRTOS** currently supports a number of target platforms, see [Supported Platforms Table](platforms.md#platforms-supported-targets) for details.
+    The history of **scmRTOS** and certain "philosophical" considerations regarding real-time operating systems are detailed in the [PDF document](https://github.com/scmrtos/scmrtos-doc/blob/master/attic/pdf/scmRTOS.en.pdf).

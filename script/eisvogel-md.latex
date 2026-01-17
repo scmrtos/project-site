@@ -1026,7 +1026,8 @@ $endif$
 
 % additions C++ settins (optional)
 \setminted[cpp]{
-    linenos=false % remome line numbers
+    linenos=false,          % remome line numbers
+    ignorelexererrors=true  % prevent red frames over some symbols on code blocks
 }
 
 % globally disable orphan lines before listings
@@ -1066,6 +1067,14 @@ $endif$
 \postauthor{\end{center}\vspace{0.8cm}}
 \predate{\begin{center}\large\itshape}
 \postdate{\end{center}\vspace{2cm}}
+
+\usepackage{fontspec}
+\definecolor{SuccessGreen}{RGB}{0, 204, 0}
+\definecolor{ErrorRed}{RGB}{255, 0, 0}
+\newfontfamily{\symbolfont}{DejaVu Sans}
+\newcommand{\goodcheck}{{\symbolfont \textcolor{SuccessGreen}{✔}}}
+\newcommand{\goodcross}{{\symbolfont \textcolor{ErrorRed}{✘}}}
+
 
 %-------------------------------------------------------------------------------
 
