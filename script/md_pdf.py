@@ -11,8 +11,9 @@ pd_opt = [
     '--filter', 'pandoc-latex-environment',
     '--filter', 'pandoc-minted',
     '--template=script/eisvogel-md.latex',
-    '--from=markdown+yaml_metadata_block+pipe_tables',
-    '-f', 'markdown+tex_math_single_backslash',
+    '-f', 'markdown+yaml_metadata_block'      # YAML at markdown source beginning
+          '+pipe_tables'                      # markdown tables support
+          '+tex_math_single_backslash'        # i.e. \frac instead of \\frac
     '-V', 'listings-disable-line-numbers=true',
     '--pdf-engine=xelatex',
     '--pdf-engine-opt=--shell-escape',
