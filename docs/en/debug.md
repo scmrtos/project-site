@@ -16,7 +16,7 @@ This leaves the developer to choose a stack size balancing memory conservation a
 
 When using an operating system, the situation worsens: there are multiple stacks—one per configured process—leading to greater RAM pressure and forcing developers to be more conservative with margins.
 
-To address these issues, practical measurement of actual stack consumption per process can be employed. This capability, like other debugging features in **scmRTOS**, is enabled during configuration by setting the macro `scmRTOS_DEBUG_ENABLE` to 1.
+To address these issues, practical measurement of actual stack consumption per process can be employed. This capability, like other debugging features in **scmRTOS**, is enabled during configuration by setting the macro `scmRTOS_DEBUG_ENABLE` to&nbsp;1.
 
 The method works as follows: during stack frame initialization, the entire stack area is filled with a known pattern value. Later, to check usage, the stack memory allocated for a process is scanned starting from the end opposite the top-of-stack (TOS), locating the point where the pattern is no longer overwritten. The number of untouched pattern cells indicates the remaining stack slack (unused margin).
 
