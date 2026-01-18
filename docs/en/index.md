@@ -4,7 +4,7 @@
 
 **scmRTOS** is compact Real-Time Preemptive Operating System intended for use with Single-Chip Microcontrollers. 
 
-**scmRTOS** is capable to run on tiny uCs with as small amount of RAM as 512 bytes. The RTOS is written on C++ and supports [various platforms](#index-supported-targets). See next sections and for more details. Additionally, the documentation is also available in [PDF format](https://github.com/scmrtos/scmrtos-doc).
+**scmRTOS** is capable to run on tiny uCs with as small amount of RAM as 512 bytes. The RTOS is written on C++ and supports [various platforms](#index-supported-targets). See next sections and for more details. Additionally, the documentation is also available in [PDF format](https://github.com/scmrtos/scmrtos-doc/blob/master/scmrtos-en.pdf).
 
 
 Source code can be cloned or downloaded from [Github](https://github.com/scmrtos/scmrtos). There are a [number of sample projects](https://github.com/scmrtos/scmrtos-sample-projects) that demonstrates RTOS usage.
