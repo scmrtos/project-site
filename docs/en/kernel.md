@@ -87,7 +87,9 @@ Control transfer itself can be organized in several ways. One is direct transfer
 
 The scheduler source code is in the `sched()` function, see "Listing 3. Scheduler".
 
-There are two variants: one for direct control transfer (`scmRTOS_CONTEXT_SWITCH_SCHEME == 0`), the other for software interrupt-based transfer.
+There are two variants: one for direct control transfer[^kernel-6.1], the other for software interrupt-based transfer.
+
+[^kernel-6.1]: `scmRTOS_CONTEXT_SWITCH_SCHEME == 0`
 
 Note that scheduling from the main program level is done via the `scheduler()` function, which calls the actual scheduler only if not invoked from an interrupt:
 
