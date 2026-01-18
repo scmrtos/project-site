@@ -166,7 +166,7 @@ Due to the preemptive nature of process execution, any process can be interrupte
 
 In OS terms, such a section is called a critical section. To simplify the organization of a critical section, a special wrapper class `TCritSect` is used. Its constructor saves the state of the processor resource controlling global interrupt enable/disable and then disables interrupts. The destructor restores this processor resource to the state it was in before the interrupts were disabled.
 
-Thus, if interrupts were already disabled, they remain disabled. If they were enabled, they are re-enabled. The implementation of this class is platform-dependent, so its definition is contained in the corresponding file `os_target.h`.
+Thus, if interrupts were already disabled, they remain disabled. If they were enabled, they are re-enabled. The implementation of this class is platform-dependent, so its definition is contained in the corresponding file **os_target.h**.
 
 Using `TCritSect` is straightforward: at the point corresponding to the start of the critical section, simply declare an object of this type, and from the declaration point until the end of the block, interrupts will be disabled[^overview-8].
 
@@ -291,7 +291,7 @@ Listing 3. Declaring Processes in a Source File and Starting the OS
 
 Each process, as mentioned earlier, has an executable function. When using the scheme described above, this executable function is named `exec` and looks as shown in "Listing 1. Process Execution Function".
 
-Configuration information is specified in a dedicated header file `scmRTOS_config.h`. The list of configuration macros and their meanings[^overview-14] are provided below.
+Configuration information is specified in a dedicated header file **scmRTOS_config**.h. The list of configuration macros and their meanings[^overview-14] are provided below.
 
 [^overview-14]: The list shows example values. In each project, values are set individually based on project requirements.
 

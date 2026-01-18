@@ -1075,6 +1075,16 @@ $endif$
 \newcommand{\goodcheck}{{\symbolfont \textcolor{SuccessGreen}{✔}}}
 \newcommand{\goodcross}{{\symbolfont \textcolor{ErrorRed}{✘}}}
 
+\usepackage{microtype}
+\microtypesetup{
+  protrusion = true,
+  stretch = 30,
+  shrink = 20
+}
+\sloppy
+
+\usepackage[english,russian]{babel}
+\babelhyphenation[russian]{scmRTOS}
 
 %-------------------------------------------------------------------------------
 

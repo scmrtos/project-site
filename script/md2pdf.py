@@ -27,7 +27,7 @@ src_list = [
     'kernel.md',
     'processes.md',
     'ipcs.md',
-    'ports.md',
+    'porting.md',
     'debug.md',
     'profiler.md',
     'example-job-queue.md',
@@ -55,7 +55,7 @@ Path(build_dir).mkdir(exist_ok=True)
 for src, trg in seq:
     status, res = build_pdf(src, trg)
     if status: # Ok
-        move_file(res, 'site/pdf')
+        move_file(res, '.')
     else:
         sys.exit(-1)
 

@@ -87,7 +87,9 @@ Control transfer itself can be organized in several ways. One is direct transfer
 
 The scheduler source code is in the `sched()` function, see "Listing 3. Scheduler".
 
-There are two variants: one for direct control transfer (`scmRTOS_CONTEXT_SWITCH_SCHEME == 0`), the other for software interrupt-based transfer.
+There are two variants: one for direct control transfer[^kernel-6.1], the other for software interrupt-based transfer.
+
+[^kernel-6.1]: `scmRTOS_CONTEXT_SWITCH_SCHEME == 0`
 
 Note that scheduling from the main program level is done via the `scheduler()` function, which calls the actual scheduler only if not invoked from an interrupt:
 
@@ -457,8 +459,8 @@ The entire interface consists of inline functions, which in most cases allows ex
 
 The kernel agent class described above enables the creation of additional features that extend the OS capabilities. The methodology for creating such extensions is straightforward: simply declare a class derived from `TKernelAgent` and define its contents. Such classes are referred to as **operating system extensions**.
 
-The layout of the OS kernel code is organized so that class declarations and definitions of certain class member functions are separated into the header file `os_kernel.h`. This allows a user-defined class to have access to all kernel type definitions while simultaneously making the user-defined class visible to member functions of kernel classes&nbsp;– for example, in the scheduler and the system timer function[^kernel-31].
+The layout of the OS kernel code is organized so that class declarations and definitions of certain class member functions are separated into the header file **os_kernel.h**. This allows a user-defined class to have access to all kernel type definitions while simultaneously making the user-defined class visible to member functions of kernel classes&nbsp;– for example, in the scheduler and the system timer function[^kernel-31].
 
 [^kernel-31]: In user hooks.
 
-Extensions are integrated using the configuration file `scmRTOS_extensions.h`, which is included in `os_kernel.h` between the kernel type definitions and their member function implementations. This makes it possible to place the extension class definition in a separate user header file and include it in the project by adding it to `scmRTOS_extensions.h`. Once done, the extension is ready for use according to its intended purpose.
+Extensions are integrated using the configuration file **scmRTOS_extensions.h**, which is included in **os_kernel.h** between the kernel type definitions and their member function implementations. This makes it possible to place the extension class definition in a separate user header file and include it in the project by adding it to **scmRTOS_extensions.h**. Once done, the extension is ready for use according to its intended purpose.

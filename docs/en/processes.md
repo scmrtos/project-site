@@ -138,7 +138,7 @@ The class interface provides the following functions:
 
 A process stack is a contiguous region of RAM used to store process data, save the process context, and hold return addresses from functions and interrupts.
 
-Due to architectural features of some processors, two separate stacks may be used&nbsp;– one for data and one for return addresses. **scmRTOS** supports this capability, allowing each process object to contain two distinct RAM regions (two stacks), with sizes specified individually based on application requirements. Support for separate stacks is enabled via the `SEPARATE_RETURN_STACK` macro defined in `os_target.h`.
+Due to architectural features of some processors, two separate stacks may be used&nbsp;– one for data and one for return addresses. **scmRTOS** supports this capability, allowing each process object to contain two distinct RAM regions (two stacks), with sizes specified individually based on application requirements. Support for separate stacks is enabled via the `SEPARATE_RETURN_STACK` macro defined in **os_target.h**.
 
 Within a protected section, a critically important function `init_stack_frame()` is declared, responsible for constructing the initial stack frame. The reason is that process executable functions do not start like ordinary functions&nbsp;– they are not called in the traditional way. Control reaches them through the same mechanism used for context switches between processes. Therefore, starting a process involves restoring its context from the stack followed by a jump to the address stored as the saved interrupt return point.
 

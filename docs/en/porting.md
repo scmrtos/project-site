@@ -1,20 +1,20 @@
-# Ports
+# Porting
 
 ## General Notes
 
-Due to significant differences in both hardware architectures and the development tools targeting them, adaptation of the OS code[^ports-1] to specific platforms is required. The result of this effort is the platform-specific portion, which, together with the common core, constitutes the complete port for a given platform. The process of preparing the platform-specific portion is referred to as porting.
+Due to significant differences in both hardware architectures and the development tools targeting them, adaptation of the OS code[^porting-1] to specific platforms is required. The result of this effort is the platform-specific portion, which, together with the common core, constitutes the complete port for a given platform. The process of preparing the platform-specific portion is referred to as porting.
 
-[^ports-1]: This applies not only to the OS but also to other cross-platform software.
+[^porting-1]: This applies not only to the OS but also to other cross-platform software.
 
-This chapter primarily examines the platform-specific components, their contents and characteristics, and provides brief instructions for porting the OS&nbsp;– i.e., the steps required to create a new port.
+This section primarily examines the platform-specific components, their contents and characteristics, and provides brief instructions for porting the OS&nbsp;– i.e., the steps required to create a new port.
 
 The platform-specific code for each target platform is contained in a separate directory and minimally includes three files:
 
-* `os_target.h` – platform-specific declarations and macros.
-* `os_target_asm.ext`[^ports-2] – low-level code, including context switch functions and OS startup routines.
-* `os_target.cpp` – definitions of the process stack frame initialization function and the interrupt handler for the timer used as the system timer.
+* **os_target.h**. Pplatform-specific declarations and macros.
+* **os_target_asm.ext**[^porting-2]. Low-level code, including context switch functions and OS startup routines.
+* **os_target.cpp**. Definitions of the process stack frame initialization function and the interrupt handler for the timer used as the system timer.
 
-[^ports-2]: The file extension for assembly source code specific to the target processor.
+[^porting-2]: The file extension for assembly source code specific to the target processor.
 
 Configuration of the OS code for a target platform is achieved through:
 
@@ -24,9 +24,9 @@ Configuration of the OS code for a target platform is achieved through:
 * Type aliases for certain types.
 * Definition of functions whose implementation is delegated to the port level.
 
-A critical and delicate part of the port code involves the implementation of assembly language subroutines responsible for system startup, saving the context of the interrupted process, switching stack pointers, and restoring the context of the process gaining control, including the software interrupt handler that performs context switching. Implementing this code requires the port developer to have in-depth knowledge of the target hardware architecture at a low level, as well as proficiency in using the toolchain (compiler, assembler, linker) for mixed-language[^ports-3] projects.
+A critical and delicate part of the port code involves the implementation of assembly language subroutines responsible for system startup, saving the context of the interrupted process, switching stack pointers, and restoring the context of the process gaining control, including the software interrupt handler that performs context switching. Implementing this code requires the port developer to have in-depth knowledge of the target hardware architecture at a low level, as well as proficiency in using the toolchain (compiler, assembler, linker) for mixed-language[^porting-3] projects.
 
-[^ports-3]: That is, projects containing source files in different programming languages&nbsp;– in this case, C++ and the assembly language of the target hardware platform.
+[^porting-3]: That is, projects containing source files in different programming languages&nbsp;– in this case, C++ and the assembly language of the target hardware platform.
 
 The porting process primarily consists of identifying the required porting objects and implementing the platform-specific code.
 
@@ -46,9 +46,9 @@ Specifies the inlining behavior for functions. Typically consists of a platform-
 OS_PROCESS
 ```
 
-Qualifies the executable function of a process. Contains a platform-specific attribute that informs the compiler that the function does not return, allowing preserved[^ports-4] registers to be used without saving them. This reduces code size and stack usage.
+Qualifies the executable function of a process. Contains a platform-specific attribute that informs the compiler that the function does not return, allowing preserved[^porting-4] registers to be used without saving them. This reduces code size and stack usage.
 
-[^ports-4]: Registers whose values must be saved before use and restored afterward to prevent corruption of the calling function's context when invoking another function.
+[^porting-4]: Registers whose values must be saved before use and restored afterward to prevent corruption of the calling function's context when invoking another function.
 
 ```cpp
 OS_INTERRUPT
@@ -162,9 +162,9 @@ Assembly function that performs direct context switching between processes.
 context_switcher_isr()
 ```
 
-Interrupt handler for context switching. Implemented in assembly language. Saves the context of the interrupted process, switches stack pointers via a call to `context_switch_hook()`[^ports-5], and restores the context of the activated process.
+Interrupt handler for context switching. Implemented in assembly language. Saves the context of the interrupted process, switches stack pointers via a call to `context_switch_hook()`[^porting-5], and restores the context of the activated process.
 
-[^ports-5]: Through the wrapper function `os_context_switch_hook()`, which has `"extern C"` linkage.
+[^porting-5]: Through the wrapper function `os_context_switch_hook()`, which has `"extern C"` linkage.
 
 ```cpp
 TBaseProcess::init_stack_frame()
@@ -186,13 +186,13 @@ The most delicate and critical tasks involve implementing the assembly code and 
 
 * Determining the calling conventions used by the compiler to identify which registers (or stack areas) are used for passing arguments of various types.
 * Understanding how the processor handles saving of return addresses and status registers upon interrupt occurrence&nbsp;– this is essential for correct stack frame construction on the target platform, which in turn is necessary for implementing context switch functions/handlers and stack frame initialization.
-* Verifying the name mangling scheme for exported/imported symbols in assembly code. In the simplest case, C names (and `"extern C"`[^ports-6] names in C++) are visible unchanged in assembly code, but on some platforms[^ports-7] prefixes and/or suffixes may be added, requiring assembly functions to be named accordingly for correct linker resolution.
+* Verifying the name mangling scheme for exported/imported symbols in assembly code. In the simplest case, C names (and `"extern C"`[^porting-6] names in C++) are visible unchanged in assembly code, but on some platforms[^porting-7] prefixes and/or suffixes may be added, requiring assembly functions to be named accordingly for correct linker resolution.
 
-[^ports-6]: C++ names undergo special mangling to support function overloading and type-safe linking, making direct assembly level access difficult. Therefore, functions defined in C++-compiled files that need to be accessed from assembly code must be declared with `"extern C"` linkage.
+[^porting-6]: C++ names undergo special mangling to support function overloading and type-safe linking, making direct assembly level access difficult. Therefore, functions defined in C++-compiled files that need to be accessed from assembly code must be declared with `"extern C"` linkage.
 
-[^ports-7]: Notably on Blackfin.
+[^porting-7]: Notably on Blackfin.
 
-All assembly code should be placed in the file `os_target_asm.ext` mentioned earlier. Macro and type definitions, along with inline functions, belong in `os_target.h`. The file `os_target.cpp` should declare type objects if needed (e.g., `OS::TPrioMaskTable OS::PrioMaskTable`), define `TBaseProcess::init_stack_frame()` and the system timer interrupt handler `system_timer_isr()`.
+All assembly code should be placed in the file **os_target_asm.ext** mentioned earlier. Macro and type definitions, along with inline functions, belong in **os_target.h**. The file `os_target.cpp` should declare type objects if needed (e.g., `OS::TPrioMaskTable` `OS::PrioMaskTable`), define `TBaseProcess::init_stack_frame()` and the system timer interrupt handler `system_timer_isr()`.
 
 The above provides only general information related to OS ports. Porting involves numerous specific nuances whose detailed description is beyond the scope of this document.
 
@@ -206,11 +206,11 @@ To enhance flexibility and efficiency, certain platform-specific code that depen
 
 For port configuration, the project must include the following files:
 
-* `scmRTOS_config.h`;
-* `scmRTOS_target_cfg.h`;
+* **scmRTOS_config.h**;
+* **scmRTOS_target_cfg.h**;
 
-The file `scmRTOS_config.h` contains most configuration macros defining parameters such as the number of processes, context switch method, enabling of system time functions, user hook support, priority value ordering, and similar settings.
+The file **scmRTOS_config.h** contains most configuration macros defining parameters such as the number of processes, context switch method, enabling of system time functions, user hook support, priority value ordering, and similar settings.
 
-The file `scmRTOS_target_cfg.h` contains code for managing target processor resources selected for system functions&nbsp;– primarily the system timer and context-switch interrupt.
+The file **scmRTOS_target_cfg.h** contains code for managing target processor resources selected for system functions&nbsp;– primarily the system timer and context-switch interrupt.
 
 The contents of both configuration files are described in detail in documents specific to individual ports.

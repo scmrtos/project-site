@@ -118,7 +118,7 @@ This value is relatively small; to relax this constraint, calculations are perfo
 
 The user must also ensure that counters do not overflow during the profiling period, i.e., no accumulated counter value exceeds \(2^{32}-1\). This requirement is met by coordinating the profiling period with the upper limit of the value returned by `time_interval()`.
 
-Integrating the profiler into a project is done by including the header file `profiler.h` in the project's configuration file `scmRTOS_extensions.h`.
+Integrating the profiler into a project is done by including the header file `profiler.h` in the project's configuration file **scmRTOS_extensions.h**.
 
 ### Application
 
