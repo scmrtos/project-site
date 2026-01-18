@@ -27,7 +27,7 @@ src_list = [
     'kernel.md',
     'processes.md',
     'ipcs.md',
-    'ports.md',
+    'porting.md',
     'debug.md',
     'profiler.md',
     'example-job-queue.md',

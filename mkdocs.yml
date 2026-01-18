@@ -28,9 +28,9 @@ nav:
         - Kernel                         : kernel.md
         - Processes                      : processes.md
         - Interprocess Communication     : ipcs.md
-        - Ports                          : ports.md
 
     - Appendix:
+        - Porting                        : porting.md
         - Debugging                      : debug.md
         - Process Profiling              : profiler.md
         - 'Example: Job Queue'           : example-job-queue.md
@@ -99,9 +99,9 @@ plugins:
                     - Ядро                           : kernel.md
                     - Процессы                       : processes.md
                     - Межпроцессное взаимодействие   : ipcs.md
-                    - Порты                          : ports.md
 
                 - Приложения:
+                    - Портирование                   : porting.md
                     - Отладка                        : debug.md
                     - Профилировка процессов         : profiler.md
                     - 'Пример: очередь заданий'      : example-job-queue.md
