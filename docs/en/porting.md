@@ -192,7 +192,7 @@ The most delicate and critical tasks involve implementing the assembly code and 
 
 [^porting-7]: Notably on Blackfin.
 
-All assembly code should be placed in the file **os_target_asm.ext** mentioned earlier. Macro and type definitions, along with inline functions, belong in **os_target.h**. The file `os_target.cpp` should declare type objects if needed (e.g., `OS::TPrioMaskTable` `OS::PrioMaskTable`), define `TBaseProcess::init_stack_frame()` and the system timer interrupt handler `system_timer_isr()`.
+All assembly code should be placed in the file **os_target_asm.ext** mentioned earlier. Macro and type definitions, along with inline functions, belong in **os_target.h**. The file **os_target.cpp** should declare type objects if needed (e.g., `OS::TPrioMaskTable` `OS::PrioMaskTable`), define `TBaseProcess::init_stack_frame()` and the system timer interrupt handler `system_timer_isr()`.
 
 The above provides only general information related to OS ports. Porting involves numerous specific nuances whose detailed description is beyond the scope of this document.
 

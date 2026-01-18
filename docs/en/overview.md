@@ -291,7 +291,7 @@ Listing 3. Declaring Processes in a Source File and Starting the OS
 
 Each process, as mentioned earlier, has an executable function. When using the scheme described above, this executable function is named `exec` and looks as shown in "Listing 1. Process Execution Function".
 
-Configuration information is specified in a dedicated header file **scmRTOS_config**.h. The list of configuration macros and their meanings[^overview-14] are provided below.
+Configuration information is specified in a dedicated header file **scmRTOS_config.h**. The list of configuration macros and their meanings[^overview-14] are provided below.
 
 [^overview-14]: The list shows example values. In each project, values are set individually based on project requirements.
 
