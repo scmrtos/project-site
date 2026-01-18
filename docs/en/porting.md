@@ -192,7 +192,7 @@ The most delicate and critical tasks involve implementing the assembly code and 
 
 [^porting-7]: Notably on Blackfin.
 
-All assembly code should be placed in the file `os_target_asm.ext` mentioned earlier. Macro and type definitions, along with inline functions, belong in `os_target.h`. The file `os_target.cpp` should declare type objects if needed (e.g., `OS::TPrioMaskTable` `OS::PrioMaskTable`), define `TBaseProcess::init_stack_frame()` and the system timer interrupt handler `system_timer_isr()`.
+All assembly code should be placed in the file **os_target_asm.ext** mentioned earlier. Macro and type definitions, along with inline functions, belong in **os_target.h**. The file `os_target.cpp` should declare type objects if needed (e.g., `OS::TPrioMaskTable` `OS::PrioMaskTable`), define `TBaseProcess::init_stack_frame()` and the system timer interrupt handler `system_timer_isr()`.
 
 The above provides only general information related to OS ports. Porting involves numerous specific nuances whose detailed description is beyond the scope of this document.
 
@@ -206,11 +206,11 @@ To enhance flexibility and efficiency, certain platform-specific code that depen
 
 For port configuration, the project must include the following files:
 
-* `scmRTOS_config.h`;
-* `scmRTOS_target_cfg.h`;
+* **scmRTOS_config.h**;
+* **scmRTOS_target_cfg.h**;
 
-The file `scmRTOS_config.h` contains most configuration macros defining parameters such as the number of processes, context switch method, enabling of system time functions, user hook support, priority value ordering, and similar settings.
+The file **scmRTOS_config.h** contains most configuration macros defining parameters such as the number of processes, context switch method, enabling of system time functions, user hook support, priority value ordering, and similar settings.
 
-The file `scmRTOS_target_cfg.h` contains code for managing target processor resources selected for system functions&nbsp;– primarily the system timer and context-switch interrupt.
+The file **scmRTOS_target_cfg.h** contains code for managing target processor resources selected for system functions&nbsp;– primarily the system timer and context-switch interrupt.
 
 The contents of both configuration files are described in detail in documents specific to individual ports.
