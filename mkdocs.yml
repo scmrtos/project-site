@@ -4,7 +4,7 @@ site_name: scmRTOS
 
 theme:
     name: readthedocs
-    custom_dir: overrides
+    custom_dir: docs/overrides
     max_width: 2000
     navigation_depth: 5
     font: false
