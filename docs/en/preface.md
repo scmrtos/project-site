@@ -12,7 +12,7 @@ A second key motivation for **scmRTOS** is its implementation in the C++ program
 
 In embedded systems development, C++ is sometimes viewed unfavorably due to misconceptions regarding overhead and controllability. In practice, appropriate use of C++ can simplify software development and maintenance, although inappropriate application may produce the opposite result.
 
-**scmRTOS** prioritizes ease of use. This is facilitated by object-oriented design, where classes encapsulate internal details and expose only a well-defined interface, thereby minimizing the risk of incorrect usage of operating system components.
+**scmRTOS** prioritizes ease of use. This is facilitated by object-based design, where classes encapsulate internal details and expose only a well-defined interface, thereby minimizing the risk of incorrect usage of operating system components.
 
 !!! tip "**TIP**"
 

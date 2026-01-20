@@ -348,6 +348,8 @@ The `terminate()` function is intended to be called from outside the process bei
 
 The `terminate()` function can accept a pointer to a function as an argument; this function will serve as the executable entry point for the process on the next start. This provides considerable flexibility in program implementation&nbsp;– on each restart, the exact executable function required in the current program context can be specified.
 
+<span id="processes-restart-process-tip"></span>
+
 !!! tip "**TIP**"
 
     The ability to specify the executable function on restart can be effectively used to simulate process deletion and creation&nbsp;– some libraries are designed to require dynamic resource allocation for their operation, in particular the creation of processes to perform tasks followed by their deletion.

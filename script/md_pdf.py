@@ -6,11 +6,11 @@ from utils   import *
 
 #------------------------------------------------------------------------------
 pd_opt = [
-    '--lua-filter=script/br2newline.lua',
-    '--lua-filter=script/md2admon.lua',
-    '--lua-filter=script/caption.lua',
-    '--lua-filter=script/convert-link.lua',
-    '--lua-filter=script/symbols-filter.lua',
+    '--lua-filter=script/br2newline.lua',     # processing <br>, <br/>, <br /> in any place including together
+    '--lua-filter=script/md2admon.lua',       # build admonitions
+    '--lua-filter=script/caption.lua',        # build captions from pymdownx.blocks.caption tags
+    '--lua-filter=script/convert-link.lua',   # convert links from <file>.md#<anchor to #anchor
+    '--lua-filter=script/symbols-filter.lua', # replace ✔ with \goodcheck, ✘ with \goodcross commands
     '--filter', 'pandoc-latex-environment',
     '--filter', 'pandoc-minted',
     '--template=script/eisvogel-md.latex',

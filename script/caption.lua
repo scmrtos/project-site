@@ -10,7 +10,7 @@ function Pandoc(doc)
       local caption_text = pandoc.utils.stringify(block):gsub("^///%s*Caption%s*\n?(.-)%s*///%s*$", "%1")
 
       if caption_text ~= "" then
-        -- Жирный, по центру, неразрывный с объектом
+        -- bold, centering, not break from described object
         local caption_latex = string.format([[
 \noindent
 {\centering\bfseries\sffamily\small %s\par}
@@ -19,7 +19,7 @@ function Pandoc(doc)
         table.insert(new_blocks, pandoc.RawBlock("latex", caption_latex))
       end
       
-      -- Пропускаем закрывающий /// блок
+      -- skip ending /// block
       i = i + 1
     else
       table.insert(new_blocks, block)

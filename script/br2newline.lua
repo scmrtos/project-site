@@ -1,5 +1,5 @@
 -- br-to-linebreak.lua
--- Обрабатывает <br>, <br/>, <br /> в любом месте, в том числе слитно
+-- processing <br>, <br/>, <br /> in any place including together
 
 function Inline (el)
   if el.t == "RawInline" and el.format == "html" then
